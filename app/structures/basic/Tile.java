@@ -27,6 +27,31 @@ public class Tile {
 	int height;
 	int tilex;
 	int tiley;
+	Unit unit;
+	boolean hasUnit;
+	
+	public Unit getUnit() {
+		return unit;
+	}
+
+	public void setUnit(Unit unit) {
+		this.unit = unit;
+		hasUnit = true;
+	}
+	
+	public void removeUnit() {
+		hasUnit = false;
+		this.unit = null;
+	}
+
+	public boolean isHasUnit() {
+		return hasUnit;
+	}
+
+	public void setHasUnit(boolean hasUnit) {
+		this.hasUnit = hasUnit;
+	}
+
 	
 	public Tile() {}
 	
