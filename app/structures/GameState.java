@@ -1,6 +1,7 @@
 package structures;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import akka.actor.ActorRef;
 import akka.http.scaladsl.model.HttpEntity.LastChunk;
@@ -32,8 +33,12 @@ public class GameState {
 	public Unit unitLastClicked;
 	public Tile tilelastClicked;
 	
-	public ArrayList<Tile> highlighted = new ArrayList<>();
+	public List<Tile> highlighted = new ArrayList<>();
 	
+	public List<Tile> highlightedForAttack = new ArrayList<>();
+	
+	
+	// helper method to de-highlight all tiles
 	public void clearhighlight(ActorRef out) {
 		for (Tile tile : highlighted) {
 			BasicCommands.drawTile(out, tile, 0);
@@ -44,9 +49,20 @@ public class GameState {
 			}
 		}
 		
+		for (Tile tile : highlightedForAttack) {
+			BasicCommands.drawTile(out, tile, 0);
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		highlighted.clear();
+		highlightedForAttack.clear();
 	}
 	
+	// helper method to move an unit to a given tile
 	public void moveUnit(Unit unit, Tile target, ActorRef out) {
 		int x = tilelastClicked.getTilex();
 		int y = tilelastClicked.getTiley();
@@ -62,5 +78,22 @@ public class GameState {
 		unit.setPositionByTile(target);
 		target.setUnit(unit);
 		tilelastClicked.removeUnit();
+	}
+	
+	// a method to perform all all calculations in an attack
+	public void attack(Unit attacker, Unit defender, ActorRef out) {
+		BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
+		
+		if (defender.getHealth() <= attacker.getAttack()) {
+			//defender is dead
+			BasicCommands.setUnitHealth(out, defender, 0);
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
+			BasicCommands.deleteUnit(out, defender);
+			gameBoard.searchFor(defender).removeUnit();
+		}else {
+			defender.setHealth(defender.getHealth() - attacker.getAttack());
+			BasicCommands.setUnitHealth(out, defender, defender.getHealth());
+		}		
+				
 	}
 }

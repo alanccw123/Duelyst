@@ -25,7 +25,37 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+	int player;
+	int health;
+
+
+	public int getHealth() {
+		return health;
+	}
+
+	public void setHealth(int health) {
+		this.health = health;
+	}
+
+	public int getAttack() {
+		return attack;
+	}
+
+	public void setAttack(int attack) {
+		this.attack = attack;
+	}
+
+	int attack;
 	
+	
+	public int getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(int player) {
+		this.player = player;
+	}
+
 	public Unit() {}
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {

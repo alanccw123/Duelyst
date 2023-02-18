@@ -3,6 +3,7 @@ package structures;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.basic.Tile;
+import structures.basic.Unit;
 import utils.BasicObjectBuilders;
 
 public class Board {
@@ -33,7 +34,15 @@ public class Board {
 		return board[x][y];
 	}
 	
-	public Tile checkTile(int x, int y) {
+	public Tile searchFor(Unit unit) {
+		
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				if (board[i][j].isHasUnit() && board[i][j].getUnit().equals(unit)) {
+					return board[i][j];
+				}
+			}
+		}
 		return null;
 	}
 

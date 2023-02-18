@@ -7,6 +7,7 @@ import structures.GameState;
 import structures.basic.Tile;
 
 public class MovementChecker {
+	
 	public static ArrayList<Tile> checkMovement(Tile tile, Board board) {
 		ArrayList<Tile> range = new ArrayList<>();
 		
@@ -60,7 +61,7 @@ public class MovementChecker {
 		return range;
 	}
 	
-	private static boolean withinBoard(int x, int y) {
+	public static boolean withinBoard(int x, int y) {
 		if (x >= 0 && x <= 8 && y >= 0 && y <= 4) {
 			return true;
 		}

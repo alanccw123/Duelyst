@@ -41,43 +41,62 @@ public class Initalize implements EventProcessor{
 		Unit avatar1 = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, Unit.class);
 		Tile initial1 = gameBoard.getTile(1,2);
 		avatar1.setPositionByTile(initial1);
+		avatar1.setPlayer(1);
+		avatar1.setAttack(2);
+		avatar1.setHealth(20);
 		initial1.setUnit(avatar1);
+		
+		BasicCommands.drawUnit(out, avatar1, initial1);
+		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+		
+		BasicCommands.setUnitAttack(out, avatar1, avatar1.getAttack());
+		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+
+		BasicCommands.setUnitHealth(out, avatar1, avatar1.getHealth());
+		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
 
 		Unit avatar2 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 1, Unit.class);
 		Tile initial2 = gameBoard.getTile(7,2);
 		avatar2.setPositionByTile(initial2);
+		avatar2.setPlayer(2);
+		avatar2.setAttack(2);
+		avatar2.setHealth(20);
 		initial2.setUnit(avatar2);
+		
+		BasicCommands.drawUnit(out, avatar2, initial2);
+		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+		
+		BasicCommands.setUnitAttack(out, avatar2, avatar2.getAttack());
+		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+
+		BasicCommands.setUnitHealth(out, avatar2, avatar2.getHealth());
+		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		
+		
 		
 		
 		// this avatar is for testing
 		Unit avatar3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 2, Unit.class);
 		Tile initial3 = gameBoard.getTile(7,4);
 		avatar3.setPositionByTile(initial3);
+		avatar3.setPlayer(2);
+		avatar3.setAttack(2);
+		avatar3.setHealth(20);
 		initial3.setUnit(avatar3);
+		
 		BasicCommands.drawUnit(out, avatar3, initial3);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+		
+		BasicCommands.setUnitAttack(out, avatar3, avatar3.getAttack());
+		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+
+		BasicCommands.setUnitHealth(out, avatar3, avatar3.getHealth());
+		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		
 		//this avatar is for testing
 		
 		
-		BasicCommands.drawUnit(out, avatar1, initial1);
-		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		
-		BasicCommands.setUnitAttack(out, avatar1, 2);
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-
-		BasicCommands.setUnitHealth(out, avatar1, 20);
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		
-		
-		BasicCommands.drawUnit(out, avatar2, initial2);
-		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		
-		BasicCommands.setUnitAttack(out, avatar2, 2);
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-
-		BasicCommands.setUnitHealth(out, avatar2, 20);
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
 		
 		// setPlayer1Health

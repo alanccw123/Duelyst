@@ -2,6 +2,7 @@ package events;
 
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -10,6 +11,7 @@ import commands.BasicCommands;
 import structures.Board;
 import structures.GameState;
 import structures.basic.Tile;
+import utils.AttackChecker;
 import utils.MovementChecker;
 
 /**
@@ -45,6 +47,8 @@ public class TileClicked implements EventProcessor{
 				
 				ArrayList<Tile> range = MovementChecker.checkMovement(clicked, board);
 				
+				List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, clicked.getUnit().getPlayer());
+				
 				for (Tile tile : range) {
 					BasicCommands.drawTile(out, tile, 1);
 					try {
@@ -53,6 +57,17 @@ public class TileClicked implements EventProcessor{
 						e.printStackTrace();
 					}
 					gameState.highlighted.add(tile);
+				}
+				
+				for (Tile tile : attackable) {
+					BasicCommands.drawTile(out, tile, 2);
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+					gameState.highlightedForAttack.add(tile);
 				}
 //				ArrayList<int[]> range = new ArrayList<int[]>();
 //				
@@ -93,10 +108,13 @@ public class TileClicked implements EventProcessor{
 				gameState.clearhighlight(out);
 				
 				gameState.moveUnit(gameState.unitLastClicked, clicked, out);
-//				BasicCommands.moveUnitToTile(out, gameState.unitLastClicked, clicked);
-//				gameState.unitLastClicked.setPositionByTile(clicked);
-//				clicked.setUnit(gameState.unitLastClicked);
-//				gameState.tilelastClicked.removeUnit();
+				
+				gameState.unitLastClicked = null;
+				
+			}else if (gameState.highlightedForAttack.contains(clicked)) {
+				gameState.clearhighlight(out);
+				
+				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
 				
 				gameState.unitLastClicked = null;
 				
