@@ -40,15 +40,17 @@ public class TileClicked implements EventProcessor{
 		
 		Tile clicked = board.getTile(tilex, tiley);
 		
-
+		
+		//the user clicks on a new tile
 		if (gameState.unitLastClicked == null) {
-			//generate a list of all tile within range
+			
 			if (clicked.isHasUnit()) {
 				
+				//if the clicked tile is occupied, lists of tiles for movement & attack should be generated respectively
 				List<Tile> range = MovementChecker.checkMovement(clicked, board);
-				
 				List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, clicked.getUnit().getPlayer());
 				
+				// highlight the tiles for movement in white
 				for (Tile tile : range) {
 					BasicCommands.drawTile(out, tile, 1);
 					try {
@@ -59,6 +61,7 @@ public class TileClicked implements EventProcessor{
 					gameState.highlighted.add(tile);
 				}
 				
+				// highlight the tiles for attack in red
 				for (Tile tile : attackable) {
 					BasicCommands.drawTile(out, tile, 2);
 					try {
@@ -69,6 +72,12 @@ public class TileClicked implements EventProcessor{
 					
 					gameState.highlightedForAttack.add(tile);
 				}
+				
+				// keep tracked of the unit & tile clicked
+				gameState.unitLastClicked = clicked.getUnit();
+				gameState.tilelastClicked = clicked;
+				
+				// old code
 //				ArrayList<int[]> range = new ArrayList<int[]>();
 //				
 //				for (int i = 1; i <= 2; i++) {
@@ -97,32 +106,35 @@ public class TileClicked implements EventProcessor{
 //					}
 //				}
 //				
-				gameState.unitLastClicked = clicked.getUnit();
-				gameState.tilelastClicked = clicked;
+				
 			}
 			
 			
 		}else {
+			// if the user last clicked on an unit, this means the current clicked tile is a target for action
 			
+			
+			// user clicks on a target for movement
 			if (gameState.highlighted.contains(clicked)) {
-				gameState.clearhighlight(out);
-				
-				gameState.moveUnit(gameState.unitLastClicked, clicked, out);
-				
-				gameState.unitLastClicked = null;
-				
-			}else if (gameState.highlightedForAttack.contains(clicked)) {
-				gameState.clearhighlight(out);
-				
+				gameState.moveUnit(gameState.unitLastClicked, clicked, out);	
+			
+			// user clicks on a target for movement
+			}else if (gameState.highlightedForAttack.contains(clicked)) {	
 //				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
-				
-				gameState.unitLastClicked = null;
-				
+			
+			// user clicks on the same unit twice to cancelled the selection
 			}else if (clicked == gameState.tilelastClicked) {
-				gameState.clearhighlight(out);		
-				
-				gameState.unitLastClicked = null;
-			}			
+			
+			// user clicks on a random tile, no action is performed
+			}else {
+				return;
+			}
+			
+			//clear highlight and reference to the last clicked unit
+			//so that the event-processor is ready to process a new action for another unit
+			gameState.clearhighlight(out);		
+			
+			gameState.unitLastClicked = null;
 			
 		}
 		

@@ -7,6 +7,7 @@ import akka.actor.ActorRef;
 import akka.http.scaladsl.model.HttpEntity.LastChunk;
 import commands.BasicCommands;
 import structures.basic.*;
+import utils.MovementChecker;
 
 /**
  * This class can be used to hold information about the on-going game.
@@ -68,9 +69,11 @@ public class GameState {
 		int y = tilelastClicked.getTiley();
 		boolean yFirst = false;
 		
-		if (target.getTilex() > x && gameBoard.getTile(x + 1, y).isHasUnit()) {
+		//the default movement path is x-first
+		//when the path is not passable i.e. blocked by an enemy unit, then y-first path should be taken
+		if (target.getTilex() > x && !MovementChecker.isPassable(x + 1, y, gameBoard, unit.getPlayer())) {
 			yFirst = true;
-		}else if (target.getTilex() < x && gameBoard.getTile(x - 1, y).isHasUnit()) {
+		}else if (target.getTilex() < x && !MovementChecker.isPassable(x - 1, y, gameBoard, unit.getPlayer())) {
 			yFirst = true;
 		}
 		

@@ -9,6 +9,9 @@ import structures.basic.Tile;
 
 public class MovementChecker {
 	
+	
+	// this method checks the range of an unit on the current tile
+	// it returns a list of all tiles that the unit can go
 	public static ArrayList<Tile> checkMovement(Tile tile, Board board) {
 		ArrayList<Tile> range = new ArrayList<>();
 		
@@ -67,6 +70,7 @@ public class MovementChecker {
 			range.add(board.getTile(x - 1, y - 1));
 		}
 		
+		// old code
 //		if (withinBoard(x,y + 1) && !board.getTile(x, y + 1).isHasUnit()) {
 //			range.add(board.getTile(x, y + 1));
 //			if (withinBoard(x,y + 2) && !board.getTile(x, y + 2).isHasUnit()) {
@@ -114,6 +118,7 @@ public class MovementChecker {
 		return range;
 	}
 	
+	// helper method to check if a tile is passable
 	public static boolean isPassable(int x, int y, Board board, int player) {
 		// out of bound tiles are not valid
 		if (!withinBoard(x, y)) {
@@ -129,6 +134,7 @@ public class MovementChecker {
 		return true;
 	}
 	
+	// helper function to check if a tile is unoccupied
 	public static boolean isEmpty(int x, int y, Board board) {
 		// check for out of bound and whether the tile is currently occupied
 		if (withinBoard(x, y) && !board.getTile(x, y).isHasUnit()) {
@@ -138,6 +144,7 @@ public class MovementChecker {
 		
 	}
 	
+	// helper function to check for out of bound
 	public static boolean withinBoard(int x, int y) {
 		if (x >= 0 && x <= 8 && y >= 0 && y <= 4) {
 			return true;
