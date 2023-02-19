@@ -27,6 +27,7 @@ public class Unit {
 	ImageCorrection correction;
 	int player;
 	int health;
+	int attack;
 
 
 	public int getHealth() {
@@ -44,8 +45,6 @@ public class Unit {
 	public void setAttack(int attack) {
 		this.attack = attack;
 	}
-
-	int attack;
 	
 	
 	public int getPlayer() {

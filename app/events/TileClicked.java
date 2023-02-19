@@ -45,7 +45,7 @@ public class TileClicked implements EventProcessor{
 			//generate a list of all tile within range
 			if (clicked.isHasUnit()) {
 				
-				ArrayList<Tile> range = MovementChecker.checkMovement(clicked, board);
+				List<Tile> range = MovementChecker.checkMovement(clicked, board);
 				
 				List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, clicked.getUnit().getPlayer());
 				
