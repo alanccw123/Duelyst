@@ -93,7 +93,6 @@ public class Initalize implements EventProcessor{
 
 		BasicCommands.setUnitHealth(out, avatar3, avatar3.getHealth());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		
 		//this avatar is for testing
 		
 		

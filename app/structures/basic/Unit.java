@@ -3,6 +3,9 @@ package structures.basic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import akka.actor.ActorRef;
+import commands.BasicCommands;
+
 /**
  * This is a representation of a Unit on the game board.
  * A unit has a unique id (this is used by the front-end.
@@ -25,8 +28,30 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+	
+	
+	boolean hasAttacked;
+	boolean hasMoved;
+	
+	public boolean isHasAttacked() {
+		return hasAttacked;
+	}
+
+	public void setHasAttacked(boolean hasAttacked) {
+		this.hasAttacked = hasAttacked;
+	}
+
+	public boolean isHasMoved() {
+		return hasMoved;
+	}
+
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
+	}
+
 	int player;
 	int health;
+	int attack;
 
 
 	public int getHealth() {
@@ -45,9 +70,6 @@ public class Unit {
 		this.attack = attack;
 	}
 
-	int attack;
-	
-	
 	public int getPlayer() {
 		return player;
 	}

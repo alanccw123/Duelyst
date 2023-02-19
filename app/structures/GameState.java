@@ -20,17 +20,16 @@ public class GameState {
 	
 	public boolean gameInitalised = false;
 	
+	public boolean something;
+	
 	public Board gameBoard;
 	
 	public Player player;
 	
 	public Player ai;
 	
-	public boolean something;
-	
-	public Unit avatar1;
-	
 	public Unit unitLastClicked;
+	
 	public Tile tilelastClicked;
 	
 	public List<Tile> highlighted = new ArrayList<>();
@@ -80,20 +79,52 @@ public class GameState {
 		tilelastClicked.removeUnit();
 	}
 	
-	// a method to perform all all calculations in an attack
+	// helper method to perform all calculations in an attack
 	public void attack(Unit attacker, Unit defender, ActorRef out) {
 		BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
 		
-		if (defender.getHealth() <= attacker.getAttack()) {
-			//defender is dead
-			BasicCommands.setUnitHealth(out, defender, 0);
-			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
-			BasicCommands.deleteUnit(out, defender);
-			gameBoard.searchFor(defender).removeUnit();
-		}else {
-			defender.setHealth(defender.getHealth() - attacker.getAttack());
-			BasicCommands.setUnitHealth(out, defender, defender.getHealth());
-		}		
+		//defender counter-attack if not dead
+		if (unitTakeDamage(defender, out, attacker.getAttack())) {
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
+			unitTakeDamage(attacker, out, defender.getAttack());
+		}
+
+//		if (defender.getHealth() <= attacker.getAttack()) {
+//			//defender is dead
+//			BasicCommands.setUnitHealth(out, defender, 0);
+//			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
+//			BasicCommands.deleteUnit(out, defender);
+//			gameBoard.searchFor(defender).removeUnit();
+//		}else {
+//			//defender survives and counter-attacks
+//			defender.setHealth(defender.getHealth() - attacker.getAttack());
+//			BasicCommands.setUnitHealth(out, defender, defender.getHealth());
+//			
+//			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
+//			attacker.setHealth(defender.getHealth() - defender.getAttack());
+//			BasicCommands.setUnitHealth(out, attacker, attacker.getHealth());
+//		}		
 				
+	}
+	
+	// helper method for dealing damage to an unit 
+	// returns a boolean indicating whether the unit survives the damage
+	public boolean unitTakeDamage(Unit unit, ActorRef out, int damage) {
+		unit.setHealth(unit.getHealth() - damage);
+		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+		
+		if (unit.getHealth() <= 0) {
+			// the unit is dead
+			BasicCommands.setUnitHealth(out, unit, 0);
+			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.death);
+			BasicCommands.deleteUnit(out, unit);
+			gameBoard.searchFor(unit).removeUnit();
+			return false;
+		}else {
+			// the unit survives
+			BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+			return true;
+		}
+		
 	}
 }
