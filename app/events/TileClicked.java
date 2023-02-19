@@ -114,7 +114,7 @@ public class TileClicked implements EventProcessor{
 			}else if (gameState.highlightedForAttack.contains(clicked)) {
 				gameState.clearhighlight(out);
 				
-				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
+//				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
 				
 				gameState.unitLastClicked = null;
 				

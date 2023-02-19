@@ -80,20 +80,5 @@ public class GameState {
 		tilelastClicked.removeUnit();
 	}
 	
-	// a method to perform all all calculations in an attack
-	public void attack(Unit attacker, Unit defender, ActorRef out) {
-		BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
-		
-		if (defender.getHealth() <= attacker.getAttack()) {
-			//defender is dead
-			BasicCommands.setUnitHealth(out, defender, 0);
-			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
-			BasicCommands.deleteUnit(out, defender);
-			gameBoard.searchFor(defender).removeUnit();
-		}else {
-			defender.setHealth(defender.getHealth() - attacker.getAttack());
-			BasicCommands.setUnitHealth(out, defender, defender.getHealth());
-		}		
-				
-	}
+
 }
