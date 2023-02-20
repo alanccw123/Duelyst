@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import akka.actor.ActorRef;
-import akka.http.scaladsl.model.HttpEntity.LastChunk;
 import commands.BasicCommands;
 import structures.basic.*;
 import utils.MovementChecker;
@@ -37,6 +36,10 @@ public class GameState {
 	public List<Tile> highlighted = new ArrayList<>();
 	
 	public List<Tile> highlightedForAttack = new ArrayList<>();
+	
+	
+	//attribute to keep track of whether moving animation is playing
+	private boolean ready = true;
 	
 	
 	// helper method to de-highlight all tiles
@@ -81,6 +84,14 @@ public class GameState {
 		unit.setPositionByTile(target);
 		target.setUnit(unit);
 		tilelastClicked.removeUnit();
+	}
+	
+	public boolean isReady() {
+		return ready;
+	}
+	
+	public void setready(boolean state) {
+		ready = state;
 	}
 	
 

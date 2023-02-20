@@ -40,6 +40,10 @@ public class TileClicked implements EventProcessor{
 		
 		Tile clicked = board.getTile(tilex, tiley);
 		
+		if (!gameState.isReady()) {
+			return;
+		}
+		
 		
 		//the user clicks on a new tile
 		if (gameState.unitLastClicked == null) {
@@ -118,7 +122,7 @@ public class TileClicked implements EventProcessor{
 			if (gameState.highlighted.contains(clicked)) {
 				gameState.moveUnit(gameState.unitLastClicked, clicked, out);	
 			
-			// user clicks on a target for movement
+			// user clicks on a target for attack
 			}else if (gameState.highlightedForAttack.contains(clicked)) {	
 //				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
 			
