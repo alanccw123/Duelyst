@@ -7,6 +7,9 @@ import akka.actor.ActorRef;
 import akka.http.scaladsl.model.HttpEntity.LastChunk;
 import commands.BasicCommands;
 import structures.basic.*;
+import utils.AttackChecker;
+import utils.MovementChecker;
+import views.html.helper.checkbox;
 
 /**
  * This class can be used to hold information about the on-going game.
@@ -63,8 +66,9 @@ public class GameState {
 	
 	// helper method to move an unit to a given tile
 	public void moveUnit(Unit unit, Tile target, ActorRef out) {
-		int x = tilelastClicked.getTilex();
-		int y = tilelastClicked.getTiley();
+		Tile current = gameBoard.searchFor(unit);
+		int x = current.getTilex();
+		int y = current.getTiley();
 		boolean yFirst = false;
 		
 		if (target.getTilex() > x && gameBoard.getTile(x + 1, y).isHasUnit()) {
@@ -74,6 +78,11 @@ public class GameState {
 		}
 		
 		BasicCommands.moveUnitToTile(out, unit, target, yFirst);
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		unit.setPositionByTile(target);
 		target.setUnit(unit);
 		tilelastClicked.removeUnit();
@@ -81,29 +90,66 @@ public class GameState {
 	
 	// helper method to perform all calculations in an attack
 	public void attack(Unit attacker, Unit defender, ActorRef out) {
-		BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
 		
-		//defender counter-attack if not dead
-		if (unitTakeDamage(defender, out, attacker.getAttack())) {
-			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
-			unitTakeDamage(attacker, out, defender.getAttack());
+		Tile current = gameBoard.searchFor(attacker);
+		Tile target = gameBoard.searchFor(defender);
+		
+		//if the attack target is out of reach
+		if (!AttackChecker.checkAttackRange(current, gameBoard, attacker.getPlayer()).contains(target)) {
+			
+			//need to move the unit into position first before attack
+			List<Tile> possibleTiles = MovementChecker.checkMovement(current, gameBoard);
+			
+			
+			int shortestDistance = 0;
+			Tile destination = null;
+			
+			for (Tile tile : possibleTiles) {
+				//check if moving to this tile allows the attacker to initiate attack
+				if (AttackChecker.checkAttackRange(tile, gameBoard, attacker.getPlayer()).contains(target)) {
+					// if so, check the distance (no of tiles away)
+					int xDistance = tile.getTilex() - current.getTilex();
+					int yDistance = tile.getTiley() - current.getTiley();
+					int distance = Math.abs(xDistance) + Math.abs(yDistance);
+					
+					// keep track of the shortest path
+					if (shortestDistance == 0 || distance < shortestDistance) {
+						shortestDistance = distance;
+						destination = tile;
+						
+					// if two paths have equal distance, the one with positive difference in position indices would be used
+					// therefore, the unit would prioritise moving right over left, and down over top
+					}else if (distance == shortestDistance) {
+						if (destination.getTilex() - current.getTilex()+ destination.getTiley() - current.getTiley() < (xDistance + yDistance)) {
+							destination = tile;
+						}
+					}
+				}
+				
+			}
+			// moving the unit into attack position
+			moveUnit(attacker, destination, out);
 		}
-
-//		if (defender.getHealth() <= attacker.getAttack()) {
-//			//defender is dead
-//			BasicCommands.setUnitHealth(out, defender, 0);
-//			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.death);
-//			BasicCommands.deleteUnit(out, defender);
-//			gameBoard.searchFor(defender).removeUnit();
-//		}else {
-//			//defender survives and counter-attacks
-//			defender.setHealth(defender.getHealth() - attacker.getAttack());
-//			BasicCommands.setUnitHealth(out, defender, defender.getHealth());
-//			
-//			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
-//			attacker.setHealth(defender.getHealth() - defender.getAttack());
-//			BasicCommands.setUnitHealth(out, attacker, attacker.getHealth());
-//		}		
+		
+		
+		
+		// attacker attack
+		BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		if (unitTakeDamage(defender, out, attacker.getAttack())) {
+			//defender counter-attack if not dead
+			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			unitTakeDamage(attacker, out, defender.getAttack());
+		}	
 				
 	}
 	
@@ -112,11 +158,21 @@ public class GameState {
 	public boolean unitTakeDamage(Unit unit, ActorRef out, int damage) {
 		unit.setHealth(unit.getHealth() - damage);
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 		if (unit.getHealth() <= 0) {
 			// the unit is dead
 			BasicCommands.setUnitHealth(out, unit, 0);
 			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.death);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			BasicCommands.deleteUnit(out, unit);
 			gameBoard.searchFor(unit).removeUnit();
 			return false;
