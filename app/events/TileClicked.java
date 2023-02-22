@@ -4,6 +4,7 @@ package events;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
+import commands.BasicCommands;
 import structures.GameState;
 
 /**
@@ -31,7 +32,10 @@ public class TileClicked implements EventProcessor{
 		if (gameState.something == true) {
 			// do some logic
 		}
-		
+		if(gameState.getHumanStep() < 7) {
+			gameState.addHumanStep(7);
+			BasicCommands.addPlayer1Notification(out, "step" + gameState.getHumanStep(), 2);
+		}
 	}
 
 }
