@@ -8,32 +8,36 @@ import utils.StaticConfFiles;
 
 public class BetterUnit extends Unit {
 
-	Set<String> keywords;
+    Set<String> keywords;
 
-	public BetterUnit() {}
-	
-	public BetterUnit(Set<String> keywords) {
-		super();
-		this.keywords = keywords;
-	}
+    public BetterUnit() {
+    }
 
-	public Set<String> getKeywords() {
-		return keywords;
-	}
+    public BetterUnit(Set<String> keywords) {
+        super();
+        this.keywords = keywords;
+    }
 
-	public void setKeywords(Set<String> keywords) {
-		this.keywords = keywords;
-	};
-	
-	
-	public static void main(String[] args) {
-		
-		BetterUnit unit = (BetterUnit)BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, BetterUnit.class);
-		Set<String> keywords = new HashSet<String>();
-		keywords.add("MyKeyword");
-		unit.setKeywords(keywords);
-		
-		System.err.println(unit.getClass());
-		
-	}
+    public Set<String> getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(Set<String> keywords) {
+        this.keywords = keywords;
+    }
+
+    ;
+
+
+    public static void main(String[] args) {
+
+        BetterUnit unit = (BetterUnit) BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, BetterUnit.class);
+        Set<String> keywords = new HashSet<String>();
+        keywords.add("MyKeyword");
+        assert unit != null;
+        unit.setKeywords(keywords);
+
+        System.err.println(unit.getClass());
+
+    }
 }
