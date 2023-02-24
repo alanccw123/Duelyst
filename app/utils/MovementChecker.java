@@ -19,7 +19,7 @@ public class MovementChecker {
 		int y = tile.getTiley();
 		int player = tile.getUnit().getPlayer();
 		
-	
+		// check horizontal and vertical directions
 		if (isEmpty(x, y + 1, board)) {
 			range.add(board.getTile(x, y + 1));
 		}
@@ -53,7 +53,7 @@ public class MovementChecker {
 		
 		
 		
-		
+		// check diagonal directions
 		if (isEmpty(x + 1, y + 1, board) && (isPassable(x + 1, y, board, player) || isPassable(x, y + 1, board, player))) {
 			range.add(board.getTile(x + 1, y + 1));
 		}
@@ -70,51 +70,6 @@ public class MovementChecker {
 			range.add(board.getTile(x - 1, y - 1));
 		}
 		
-		// old code
-//		if (withinBoard(x,y + 1) && !board.getTile(x, y + 1).isHasUnit()) {
-//			range.add(board.getTile(x, y + 1));
-//			if (withinBoard(x,y + 2) && !board.getTile(x, y + 2).isHasUnit()) {
-//				range.add(board.getTile(x, y + 2));
-//			}
-//		}
-//		
-//		if (withinBoard(x,y - 1) && !board.getTile(x, y - 1).isHasUnit()) {
-//			range.add(board.getTile(x, y - 1));
-//			if (withinBoard(x,y - 2) && !board.getTile(x, y - 2).isHasUnit()) {
-//				range.add(board.getTile(x, y - 2));
-//			}
-//		}
-//		
-//		if (withinBoard(x + 1, y) && !board.getTile(x + 1, y).isHasUnit()) {
-//			range.add(board.getTile(x + 1, y));
-//			if (withinBoard(x + 2,y) && !board.getTile(x + 2, y).isHasUnit()) {
-//				range.add(board.getTile(x + 2, y));
-//			}
-//		}
-//		
-//		if (withinBoard(x - 1, y) && !board.getTile(x - 1, y).isHasUnit()) {
-//			range.add(board.getTile(x - 1, y));
-//			if (withinBoard(x - 2,y) && !board.getTile(x - 2, y).isHasUnit()) {
-//				range.add(board.getTile(x - 2, y));
-//			}
-//		}
-//		
-//		if (withinBoard(x + 1, y + 1) && !board.getTile(x + 1, y + 1).isHasUnit() && !(board.getTile(x + 1, y).isHasUnit() && board.getTile(x, y + 1).isHasUnit())) {
-//			range.add(board.getTile(x + 1, y + 1));
-//		}
-//		
-//		if (withinBoard(x + 1, y - 1) && !board.getTile(x + 1, y - 1).isHasUnit() && !(board.getTile(x + 1, y).isHasUnit() && board.getTile(x, y - 1).isHasUnit())) {
-//			range.add(board.getTile(x + 1, y - 1));
-//		}
-//		
-//		if (withinBoard(x - 1, y + 1) && !board.getTile(x - 1, y + 1).isHasUnit() && !(board.getTile(x - 1, y).isHasUnit() && board.getTile(x, y + 1).isHasUnit())) {
-//			range.add(board.getTile(x - 1, y + 1));
-//		}
-//		
-//		if (withinBoard(x - 1, y - 1) && !board.getTile(x - 1, y - 1).isHasUnit() && !(board.getTile(x - 1, y).isHasUnit() && board.getTile(x, y - 1).isHasUnit())) {
-//			range.add(board.getTile(x - 1, y - 1));
-//		}
-
 		return range;
 	}
 	
