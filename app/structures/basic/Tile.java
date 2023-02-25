@@ -39,6 +39,8 @@ public class Tile {
 		hasUnit = true;
 	}
 	
+	//remove the unit currently on the tile
+	//this method is called when an unit moves away or dies
 	public void removeUnit() {
 		hasUnit = false;
 		this.unit = null;

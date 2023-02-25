@@ -69,7 +69,7 @@ public class Unit {
 	public void setAttack(int attack) {
 		this.attack = attack;
 	}
-
+	
 	public int getPlayer() {
 		return player;
 	}

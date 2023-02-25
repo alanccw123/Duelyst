@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import akka.actor.ActorRef;
-import akka.http.scaladsl.model.HttpEntity.LastChunk;
 import commands.BasicCommands;
 import structures.basic.*;
 import utils.AttackChecker;
@@ -20,27 +19,37 @@ import views.html.helper.checkbox;
  */
 public class GameState {
 
-	
+	// for testing demo
 	public boolean gameInitalised = false;
-	
 	public boolean something;
 	
-	public Board gameBoard;
-	
-	public Player player;
-	
-	public Player ai;
+	private Board gameBoard = new Board();
+
+	private Player player;
+	private Player ai;
 	
 	public Unit unitLastClicked;
 	
 	public Tile tilelastClicked;
 	
 	public List<Tile> highlighted = new ArrayList<>();
-	
 	public List<Tile> highlightedForAttack = new ArrayList<>();
 	
+	//attribute to keep track of whether moving animation is playing
+	private boolean ready = true;
+
+	private int unitID = 0;
 	
-	// helper method to de-highlight all tiles
+	
+	public int getUnitID() {
+        return unitID++;
+    }
+
+	public Board getGameBoard() {
+		return gameBoard;
+	}
+
+    // helper method to de-highlight all tiles
 	public void clearhighlight(ActorRef out) {
 		for (Tile tile : highlighted) {
 			BasicCommands.drawTile(out, tile, 0);
@@ -71,9 +80,11 @@ public class GameState {
 		int y = current.getTiley();
 		boolean yFirst = false;
 		
-		if (target.getTilex() > x && gameBoard.getTile(x + 1, y).isHasUnit()) {
+		//the default movement path is x-first
+		//when the path is not passable i.e. blocked by an enemy unit, then y-first path should be taken
+		if (target.getTilex() > x && !MovementChecker.isPassable(x + 1, y, gameBoard, unit.getPlayer())) {
 			yFirst = true;
-		}else if (target.getTilex() < x && gameBoard.getTile(x - 1, y).isHasUnit()) {
+		}else if (target.getTilex() < x && !MovementChecker.isPassable(x - 1, y, gameBoard, unit.getPlayer())) {
 			yFirst = true;
 		}
 		
@@ -183,4 +194,13 @@ public class GameState {
 		}
 		
 	}
+	public boolean isReady() {
+		return ready;
+	}
+	
+	public void setready(boolean state) {
+		ready = state;
+	}
+	
+
 }
