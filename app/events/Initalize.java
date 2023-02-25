@@ -42,7 +42,7 @@ public class Initalize implements EventProcessor{
 		avatar1.setPlayer(1);
 		avatar1.setAttack(2);
 		avatar1.setHealth(20);
-		initial1.setUnit(avatar1);
+		// initial1.setUnit(avatar1);
 		
 		BasicCommands.drawUnit(out, avatar1, initial1);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
@@ -60,7 +60,7 @@ public class Initalize implements EventProcessor{
 		avatar2.setPlayer(2);
 		avatar2.setAttack(2);
 		avatar2.setHealth(20);
-		initial2.setUnit(avatar2);
+		// initial2.setUnit(avatar2);
 		
 		BasicCommands.drawUnit(out, avatar2, initial2);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
@@ -81,7 +81,7 @@ public class Initalize implements EventProcessor{
 		avatar3.setPlayer(2);
 		avatar3.setAttack(2);
 		avatar3.setHealth(20);
-		initial3.setUnit(avatar3);
+		// initial3.setUnit(avatar3);
 		
 		BasicCommands.drawUnit(out, avatar3, initial3);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
@@ -100,7 +100,7 @@ public class Initalize implements EventProcessor{
 		avatar4.setPlayer(2);
 		avatar4.setAttack(2);
 		avatar4.setHealth(20);
-		initial4.setUnit(avatar4);
+		// initial4.setUnit(avatar4);
 		
 		BasicCommands.drawUnit(out, avatar4, initial4);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}

@@ -90,24 +90,24 @@ public class TileClicked implements EventProcessor{
 			
 			// user clicks on a target for movement
 			if (gameState.highlighted.contains(clicked)) {
+				gameState.clearhighlight(out);
 				gameState.moveUnit(gameState.unitLastClicked, clicked, out);	
 			
 			// user clicks on a target for attack
-			}else if (gameState.highlightedForAttack.contains(clicked)) {	
-//				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
+			}else if (gameState.highlightedForAttack.contains(clicked)) {
+				gameState.clearhighlight(out);	
+				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
 			
 			// user clicks on the same unit twice to cancelled the selection
 			}else if (clicked == gameState.tilelastClicked) {
-			
+				gameState.clearhighlight(out);
 			// user clicks on a random tile, no action is performed
 			}else {
 				return;
 			}
 			
 			//clear highlight and reference to the last clicked unit
-			//so that the event-processor is ready to process a new action for another unit
-			gameState.clearhighlight(out);		
-			
+			//so that the event-processor is ready to process a new action for another unit	
 			gameState.unitLastClicked = null;
 			
 		}

@@ -17,6 +17,7 @@ public class Board {
 		}
 	}
 	
+	// render the board in the frontend
 	public void initialize(ActorRef out) {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
@@ -30,10 +31,13 @@ public class Board {
 		}
 	}
 	
+	// return the Tile object for a given x and y position
 	public Tile getTile(int x, int y) {
 		return board[x][y];
 	}
 	
+	// return the tile that a given unit is currently on
+	// if the unit cannot be found, return null
 	public Tile searchFor(Unit unit) {
 		
 		for (int i = 0; i < board.length; i++) {

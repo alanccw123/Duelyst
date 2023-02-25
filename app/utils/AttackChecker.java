@@ -9,6 +9,8 @@ import structures.basic.Tile;
 
 public class AttackChecker {
 	
+	
+	// check for viable targets for attacks within one Tile range
 	public static List<Tile> checkAttackRange(Tile current, Board board, int player) {
 		ArrayList<Tile> targets = new ArrayList<>();
 		
@@ -17,7 +19,7 @@ public class AttackChecker {
 		
 		for (int i = x - 1; i <= x + 1; i++) {
 			for (int j = y - 1; j <= y + 1; j++) {
-				// TODO: check for enemy unit
+
 				Tile tile = null;
 			
 				if (MovementChecker.withinBoard(i, j)) {
@@ -34,6 +36,7 @@ public class AttackChecker {
 		return targets;
 	}
 	
+	// check for all possible targets for attack given a list of possible tiles to move to
 	public static List<Tile> checkAllAttackRange(List<Tile> tilesWithinRange, Board board, int player) {
 		ArrayList<Tile> targets = new ArrayList<>();
 		

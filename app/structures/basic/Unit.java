@@ -3,6 +3,9 @@ package structures.basic;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import akka.actor.ActorRef;
+import commands.BasicCommands;
+
 /**
  * This is a representation of a Unit on the game board.
  * A unit has a unique id (this is used by the front-end.
@@ -25,9 +28,36 @@ public class Unit {
 	Position position;
 	UnitAnimationSet animations;
 	ImageCorrection correction;
+	
+	@JsonIgnore
+	boolean hasAttacked;
+	@JsonIgnore
+	boolean hasMoved;
+	
+	public boolean isHasAttacked() {
+		return hasAttacked;
+	}
+
+	public void setHasAttacked(boolean hasAttacked) {
+		this.hasAttacked = hasAttacked;
+	}
+
+	public boolean isHasMoved() {
+		return hasMoved;
+	}
+
+	public void setHasMoved(boolean hasMoved) {
+		this.hasMoved = hasMoved;
+	}
+
+	@JsonIgnore
 	int player;
+	@JsonIgnore
 	int health;
+	@JsonIgnore
 	int attack;
+	@JsonIgnore
+	Tile current;
 
 
 	public int getHealth() {
@@ -45,8 +75,7 @@ public class Unit {
 	public void setAttack(int attack) {
 		this.attack = attack;
 	}
-	
-	
+
 	public int getPlayer() {
 		return player;
 	}
@@ -134,6 +163,8 @@ public class Unit {
 	@JsonIgnore
 	public void setPositionByTile(Tile tile) {
 		position = new Position(tile.getXpos(),tile.getYpos(),tile.getTilex(),tile.getTiley());
+		this.current = tile;
+		tile.setUnit(this);
 	}
 	
 	
