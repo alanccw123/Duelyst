@@ -108,12 +108,11 @@ public class GameState {
 
 	// for testing demo
 	public boolean gameInitalised = false;
-	public boolean something;
+
 	
 	private Board gameBoard = new Board();
 
-	private Player player;
-	private Player ai;
+
 	
 	public Unit unitLastClicked;
 	
