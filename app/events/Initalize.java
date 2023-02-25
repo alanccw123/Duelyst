@@ -32,13 +32,11 @@ public class Initalize implements EventProcessor{
 		
 		gameState.gameInitalised = true;
 		
-		Board gameBoard = new Board();
-		
-		gameState.gameBoard = gameBoard;
+		Board gameBoard = gameState.getGameBoard();
 		
 		gameBoard.initialize(out);
 		
-		Unit avatar1 = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 0, Unit.class);
+		Unit avatar1 = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, gameState.getUnitID(), Unit.class);
 		Tile initial1 = gameBoard.getTile(1,2);
 		avatar1.setPositionByTile(initial1);
 		avatar1.setPlayer(1);
@@ -56,7 +54,7 @@ public class Initalize implements EventProcessor{
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
 
-		Unit avatar2 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 1, Unit.class);
+		Unit avatar2 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
 		Tile initial2 = gameBoard.getTile(7,2);
 		avatar2.setPositionByTile(initial2);
 		avatar2.setPlayer(2);
@@ -77,7 +75,7 @@ public class Initalize implements EventProcessor{
 		
 		
 		// this avatar is for testing
-		Unit avatar3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 2, Unit.class);
+		Unit avatar3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
 		Tile initial3 = gameBoard.getTile(7,4);
 		avatar3.setPositionByTile(initial3);
 		avatar3.setPlayer(2);
@@ -96,7 +94,7 @@ public class Initalize implements EventProcessor{
 		//this avatar is for testing
 		
 		// this avatar is for testing
-		Unit avatar4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 3, Unit.class);
+		Unit avatar4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
 		Tile initial4 = gameBoard.getTile(3,4);
 		avatar4.setPositionByTile(initial4);
 		avatar4.setPlayer(2);
@@ -116,20 +114,22 @@ public class Initalize implements EventProcessor{
 		
 		
 		// setPlayer1Health
-		Player humanPlayer = new Player(20, 0);
+		Player humanPlayer = new Player(20, 2);
 		BasicCommands.setPlayer1Health(out, humanPlayer);
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setPlayer1Mana(out, humanPlayer);
 
 		// setPlayer2Health
-		Player aiPlayer = new Player(20, 0);
+		Player aiPlayer = new Player(20, 2);
 		BasicCommands.setPlayer2Health(out, aiPlayer);
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		BasicCommands.setPlayer2Mana(out, aiPlayer);
 
 		
 		
 		// User 1 makes a change
 		// this executes the command demo, comment out this when implementing your solution
-//		CommandDemo.executeDemo(out); 
+		//CommandDemo.executeDemo(out); 
 		//CheckMoveLogic.executeDemo(out);
 	}
 

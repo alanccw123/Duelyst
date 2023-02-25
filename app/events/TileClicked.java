@@ -36,7 +36,7 @@ public class TileClicked implements EventProcessor{
 		int tilex = message.get("tilex").asInt();
 		int tiley = message.get("tiley").asInt();
 		
-		Board board = gameState.gameBoard;
+		Board board = gameState.getGameBoard();
 		
 		Tile clicked = board.getTile(tilex, tiley);
 		
@@ -80,36 +80,6 @@ public class TileClicked implements EventProcessor{
 				// keep tracked of the unit & tile clicked
 				gameState.unitLastClicked = clicked.getUnit();
 				gameState.tilelastClicked = clicked;
-				
-				// old code
-//				ArrayList<int[]> range = new ArrayList<int[]>();
-//				
-//				for (int i = 1; i <= 2; i++) {
-//					range.add(new int[] {tilex + i, tiley});
-//					range.add(new int[] {tilex - i, tiley});
-//					range.add(new int[] {tilex, tiley + i});
-//					range.add(new int[] {tilex, tiley - i});
-//				}
-//				
-//		
-//				range.add(new int[] {tilex + 1, tiley + 1});
-//				range.add(new int[] {tilex - 1, tiley - 1});
-//				range.add(new int[] {tilex + 1, tiley - 1});
-//				range.add(new int[] {tilex - 1, tiley + 1});
-//
-//				// check for out of bound and only get the valid tiles and render them in highlighted mode
-//				for (int[] tile : range) {
-//					if(tile[0] >= 0 && tile[0] <= 8 && tile[1] >= 0 && tile[1] <= 4 && !board.getTile(tile[0], tile[1]).isHasUnit()) {
-//						BasicCommands.drawTile(out, board.getTile(tile[0], tile[1]), 1);
-//						try {
-//							Thread.sleep(5);
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						}
-//						gameState.highlighted.add(board.getTile(tile[0], tile[1]));
-//					}
-//				}
-//				
 				
 			}
 			

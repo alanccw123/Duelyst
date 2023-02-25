@@ -17,32 +17,36 @@ import utils.MovementChecker;
  */
 public class GameState {
 
-	
+	// for testing demo
 	public boolean gameInitalised = false;
-	
-	public Board gameBoard;
-	
-	public Player player;
-	
-	public Player ai;
-	
 	public boolean something;
 	
-	public Unit avatar1;
+	private Board gameBoard = new Board();
+
+	private Player player;
+	private Player ai;
 	
 	public Unit unitLastClicked;
 	public Tile tilelastClicked;
 	
 	public List<Tile> highlighted = new ArrayList<>();
-	
 	public List<Tile> highlightedForAttack = new ArrayList<>();
-	
 	
 	//attribute to keep track of whether moving animation is playing
 	private boolean ready = true;
+
+	private int unitID = 0;
 	
 	
-	// helper method to de-highlight all tiles
+	public int getUnitID() {
+        return unitID++;
+    }
+
+	public Board getGameBoard() {
+		return gameBoard;
+	}
+
+    // helper method to de-highlight all tiles
 	public void clearhighlight(ActorRef out) {
 		for (Tile tile : highlighted) {
 			BasicCommands.drawTile(out, tile, 0);
