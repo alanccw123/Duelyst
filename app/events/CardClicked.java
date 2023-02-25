@@ -1,9 +1,10 @@
 package events;
 
-
+import structures.GameState;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
+import commands.BasicCommands;
 import structures.GameState;
 
 /**
@@ -22,10 +23,12 @@ public class CardClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		
 		int handPosition = message.get("position").asInt();
-		
+		if(gameState.getHumanStep() < 14) {
+			gameState.addHumanStep(1);
+			BasicCommands.addPlayer1Notification(out, "step" + gameState.getHumanStep(), 2);
+			
+		}
 		
 	}
-
 }
