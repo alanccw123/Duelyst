@@ -8,10 +8,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
 import commands.BasicCommands;
-<<<<<<< app/events/TileClicked.java
-=======
+
 import structures.Board;
->>>>>>> app/events/TileClicked.java
+
 import structures.GameState;
 import structures.basic.Tile;
 import utils.AttackChecker;
@@ -46,12 +45,9 @@ public class TileClicked implements EventProcessor{
 		if (!gameState.isReady()) {
 			return;
 		}
-<<<<<<< app/events/TileClicked.java
-		if(gameState.getHumanStep() < 7) {
-			gameState.addHumanStep(7);
-			BasicCommands.addPlayer1Notification(out, "step" + gameState.getHumanStep(), 2);
-		}
-=======
+
+		
+
 		
 		
 		//the user clicks on a new tile
@@ -123,7 +119,7 @@ public class TileClicked implements EventProcessor{
 		
 			
 		
->>>>>>> app/events/TileClicked.java
+
 	}
 
 }
