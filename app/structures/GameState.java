@@ -17,75 +17,58 @@ public class GameState {
 	public boolean humanTurn = false;
 	
 	public boolean something = false;
-	private int humanHealth;
-	private int humanMana;
-	private int aiHealth;
-	private int aiMana;
-	public int humanStep;
-	public int aiStep;
-	public int cardId = 3;
-	public Player humanPlayer = new Player(20,0);
-	public Player aiPlayer = new Player(20,0);
-	private String humanBoard[][];
-	private String aiBoard[][];
-	private Card handCard[];
-	public List<Card> player1Cards = OrderedCardLoader.getPlayer1Cards();
+
+	private int humanStep;
+	private int aiStep;
+	public Player player;
+	public Player ai;
+
+
 	public void initalize(){
-		humanBoard = new String[9][5];
-		aiBoard = new String[9][5];
-		handCard = new Card[6];
 	}
-	public void sethumanBoard(int x,int y,String configFile) {
-		humanBoard[x][y] = configFile;
-	}
-	public String loadhumanBoard(int x,int y) {
-		return humanBoard[x][y];
-	}
-	
-	
-	public void setHandCard(int x,int id) {
-		handCard[x]= player1Cards.get(id);
-	}
-	public Card getHandCard(int x) {
-		return handCard[x];
-	}
-	
-	
-	
+
 	
 	
 	public int getHumanHealth() {
-		return humanHealth;
+		return player.getHealth();
 	}
 	public void setHumanHealth(int a) {
-		this.humanHealth = a;
+		if(a > 20) {
+			player.setHealth(20);
+		}else {
+			player.setHealth(a);
+		}
 	}
 	public int getHumanMana() {
-		return humanPlayer.getMana();
+		return player.getMana();
 	}
 	public void setHumanMana(int mana) {
 		if(mana >9) {
-			this.humanPlayer.setMana(9);
+			player.setMana(9);
 		}else {
-			this.humanPlayer.setMana(mana);
+			player.setMana(mana);
 		}
 	}
 	
 	
 	public int getAiHealth() {
-		return aiHealth;
+		return ai.getHealth();
 	}
 	public void setAiHealth(int a) {
-		this.aiHealth = a;
+		if(a > 20) {
+			ai.setHealth(20);
+		}else {
+			ai.setHealth(a);
+		}
 	}
 	public int getAiMana() {
-		return aiPlayer.getMana();
+		return ai.getMana();
 	}
 	public void setAiMana(int mana) {
 		if(mana >9) {
-			this.aiPlayer.setMana(9);
+			ai.setMana(9);
 		}else {
-			this.aiPlayer.setMana(mana);
+			ai.setMana(mana);
 		}
 	}
 	

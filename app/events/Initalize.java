@@ -29,22 +29,12 @@ public class Initalize implements EventProcessor{
 		gameState.humanTurn = true;
 		gameState.something = true;
 		gameState.initalize();
-		gameState.sethumanBoard(1,2,StaticConfFiles.humanAvatar);
-		gameState.setHandCard(0, 0);
-		gameState.setHandCard(1, 1);
-		gameState.setHandCard(2, 2);
-		Board board = new Board();
-		board.showBoard(out,gameState); 
-		BasicCommands.setPlayer1Health(out, gameState.humanPlayer);
-		BasicCommands.setPlayer2Health(out, gameState.aiPlayer);
-		BasicCommands.setPlayer1Mana(out, gameState.humanPlayer);
-		BasicCommands.setPlayer2Mana(out, gameState.aiPlayer);
-		Card No1 = gameState.getHandCard(0);
-		Card No2 = gameState.getHandCard(1);
-		Card No3 = gameState.getHandCard(2);
-		BasicCommands.drawCard(out, No1, 1, 0);
-		BasicCommands.drawCard(out, No2, 2, 0);
-		BasicCommands.drawCard(out, No3, 3, 0);
+		 
+		BasicCommands.setPlayer1Health(out, gameState.player);
+		BasicCommands.setPlayer2Health(out, gameState.ai);
+		BasicCommands.setPlayer1Mana(out, gameState.player);
+		BasicCommands.setPlayer2Mana(out, gameState.ai);
+
 	}
 
 }
