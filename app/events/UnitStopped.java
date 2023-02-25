@@ -25,6 +25,8 @@ public class UnitStopped implements EventProcessor{
 		
 		int unitid = message.get("id").asInt();
 		
+		gameState.setready(true);
+		
 	}
 
 }
