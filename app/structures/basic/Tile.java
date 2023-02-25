@@ -27,7 +27,10 @@ public class Tile {
 	int height;
 	int tilex;
 	int tiley;
+
+	@JsonIgnore
 	Unit unit;
+	@JsonIgnore
 	boolean hasUnit;
 	
 	public Unit getUnit() {

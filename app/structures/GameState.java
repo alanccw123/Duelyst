@@ -8,7 +8,6 @@ import commands.BasicCommands;
 import structures.basic.*;
 import utils.AttackChecker;
 import utils.MovementChecker;
-import views.html.helper.checkbox;
 
 /**
  * This class can be used to hold information about the on-going game.
@@ -94,12 +93,13 @@ public class GameState {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+
+		current.removeUnit();
 		unit.setPositionByTile(target);
-		target.setUnit(unit);
-		tilelastClicked.removeUnit();
+
 	}
 	
-	// helper method to perform all calculations in an attack
+	// helper method to perform an attack
 	public void attack(Unit attacker, Unit defender, ActorRef out) {
 		
 		Tile current = gameBoard.searchFor(attacker);

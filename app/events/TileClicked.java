@@ -107,9 +107,7 @@ public class TileClicked implements EventProcessor{
 			}
 			
 			//clear highlight and reference to the last clicked unit
-			//so that the event-processor is ready to process a new action for another unit
-			gameState.clearhighlight(out);		
-			
+			//so that the event-processor is ready to process a new action for another unit	
 			gameState.unitLastClicked = null;
 			
 		}

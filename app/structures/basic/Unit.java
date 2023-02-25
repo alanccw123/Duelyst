@@ -29,8 +29,9 @@ public class Unit {
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 	
-	
+	@JsonIgnore
 	boolean hasAttacked;
+	@JsonIgnore
 	boolean hasMoved;
 	
 	public boolean isHasAttacked() {
@@ -49,9 +50,14 @@ public class Unit {
 		this.hasMoved = hasMoved;
 	}
 
+	@JsonIgnore
 	int player;
+	@JsonIgnore
 	int health;
+	@JsonIgnore
 	int attack;
+	@JsonIgnore
+	Tile current;
 
 
 	public int getHealth() {
@@ -69,7 +75,7 @@ public class Unit {
 	public void setAttack(int attack) {
 		this.attack = attack;
 	}
-	
+
 	public int getPlayer() {
 		return player;
 	}
@@ -157,6 +163,8 @@ public class Unit {
 	@JsonIgnore
 	public void setPositionByTile(Tile tile) {
 		position = new Position(tile.getXpos(),tile.getYpos(),tile.getTilex(),tile.getTiley());
+		this.current = tile;
+		tile.setUnit(this);
 	}
 	
 	
