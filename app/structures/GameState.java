@@ -79,7 +79,7 @@ public class GameState {
 		
 		BasicCommands.moveUnitToTile(out, unit, target, yFirst);
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(2500);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
