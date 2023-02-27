@@ -29,35 +29,16 @@ public class Unit {
 	UnitAnimationSet animations;
 	ImageCorrection correction;
 	
-	@JsonIgnore
-	boolean hasAttacked;
-	@JsonIgnore
-	boolean hasMoved;
 	
-	public boolean isHasAttacked() {
-		return hasAttacked;
-	}
-
-	public void setHasAttacked(boolean hasAttacked) {
-		this.hasAttacked = hasAttacked;
-	}
-
-	public boolean isHasMoved() {
-		return hasMoved;
-	}
-
-	public void setHasMoved(boolean hasMoved) {
-		this.hasMoved = hasMoved;
-	}
 
 	@JsonIgnore
-	int player;
+	private int player;
 	@JsonIgnore
-	int health;
+	private int health;
 	@JsonIgnore
-	int attack;
+	private int attack;
 	@JsonIgnore
-	Tile current;
+	private Tile current;
 
 
 	public int getHealth() {
@@ -84,7 +65,57 @@ public class Unit {
 		this.player = player;
 	}
 
-	public Unit() {}
+	@JsonIgnore
+	private int maxAttackAction = 1;
+	@JsonIgnore
+	private int availableAttackAction = 0;
+	@JsonIgnore
+	private int maxMoveAction = 1;
+	@JsonIgnore
+	private int availableMoveAction = 0;
+
+	public boolean canMove() {
+		return availableMoveAction > 0;
+	}
+	
+	public boolean canAttack() {
+		return availableAttackAction > 0;
+	}
+
+	public void resetAction() {
+		availableAttackAction = maxAttackAction;
+		availableMoveAction = maxMoveAction;
+	}
+
+	public void spendAttackAction() {
+		availableAttackAction--;
+		availableMoveAction--;
+	}
+
+	public void spendMoveAction() {
+		availableMoveAction--;
+	}
+
+	@JsonIgnore
+	private boolean isProvoke;
+	@JsonIgnore
+	private boolean isRanged;
+	@JsonIgnore
+	private boolean isflying;
+
+	public boolean isProvoke() {
+        return isProvoke;
+    }
+
+    public boolean isRanged() {
+        return isRanged;
+    }
+
+    public boolean isIsflying() {
+        return isflying;
+    }
+
+    public Unit() {}
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {
 		super();

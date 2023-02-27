@@ -9,6 +9,7 @@ import commands.BasicCommands;
 import structures.basic.*;
 import utils.AttackChecker;
 import utils.MovementChecker;
+import utils.OrderedCardLoader;
 
 
 /**
@@ -23,19 +24,26 @@ public class GameState {
 
 	
 	public boolean humanTurn = false;
-	
 	public boolean something = false;
 
 	private int humanStep;
 	private int aiStep;
-	public Player player;
-	public Player ai;
+	private Player player = new Player(20, 2);
+	private Player ai = new Player(20, 2);
+
+
+	public Player getPlayer() {
+		return player;
+	}
+	public Player getAi() {
+		return ai;
+	}
+
 
 
 	public void initalize(){
 	}
 
-	
 	
 	public int getHumanHealth() {
 		return player.getHealth();
@@ -112,13 +120,63 @@ public class GameState {
 	
 	private Board gameBoard = new Board();
 
+	private List<Card> playerDeck = OrderedCardLoader.getPlayer1Cards();
+	private List<Card> AIDeck = OrderedCardLoader.getPlayer2Cards();
 
+	private List<Card> playerHand = new ArrayList<>();
+	private List<Card> AIHand = new ArrayList<>();
+
+	public void playerDrawCard() {
+		if (playerDeck.isEmpty()) {
+			// run of cards, player lose
+			return;
+		}
+		Card card = playerDeck.remove(0);
+		if (playerHand.size() < 6) {
+			playerHand.add(card);
+		}
+	}
+
+	public void AIDrawCard() {
+		if (AIDeck.isEmpty()) {
+			// run of cards, ai lose
+			return;
+		}
+		Card card = AIDeck.remove(0);
+		if (AIHand.size() < 6) {
+			AIHand.add(card);
+		}
+	}
+
+	public void displayHand(ActorRef out) {
+		int counter = 1;
+		for (Card card : playerHand) {
+			BasicCommands.drawCard(out, card, counter, 0);
+			counter++;
+		}
+		for (int i = counter + 1; i <= 6; i++) {
+			BasicCommands.deleteCard(out, i);
+		}
+	}
+
+	public void removePlayerCard(int index) {
+		playerHand.remove(index - 1);
+	}
+
+	public void removeAICard(int index) {
+		AIHand.remove(index - 1);
+	}
+
+	public Card getPlayerCard(int index) {
+		return playerHand.get(index - 1);
+	}
+	
 	
 	public Unit unitLastClicked;
+	public Tile tileLastClicked;
+	public Card cardLastClicked;
 	
-	public Tile tilelastClicked;
-	
-	public List<Tile> highlighted = new ArrayList<>();
+	public List<Tile> highlightedForMovement = new ArrayList<>();
 	public List<Tile> highlightedForAttack = new ArrayList<>();
 	
 	//attribute to keep track of whether moving animation is playing
@@ -137,7 +195,7 @@ public class GameState {
 
     // helper method to de-highlight all tiles
 	public void clearhighlight(ActorRef out) {
-		for (Tile tile : highlighted) {
+		for (Tile tile : highlightedForMovement) {
 			BasicCommands.drawTile(out, tile, 0);
 			try {
 				Thread.sleep(5);
@@ -155,12 +213,13 @@ public class GameState {
 			}
 		}
 		
-		highlighted.clear();
+		highlightedForMovement.clear();
 		highlightedForAttack.clear();
 	}
 	
 	// helper method to move an unit to a given tile
 	public void moveUnit(Unit unit, Tile target, ActorRef out) {
+		unit.spendMoveAction();
 		Tile current = gameBoard.searchFor(unit);
 		int x = current.getTilex();
 		int y = current.getTiley();
@@ -188,6 +247,8 @@ public class GameState {
 	
 	// helper method to perform an attack
 	public void attack(Unit attacker, Unit defender, ActorRef out) {
+
+		attacker.spendAttackAction();
 		
 		Tile current = gameBoard.searchFor(attacker);
 		Tile target = gameBoard.searchFor(defender);
@@ -238,7 +299,7 @@ public class GameState {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		if (unitTakeDamage(defender, out, attacker.getAttack())) {
+		if (unitTakeDamage(defender, out, attacker.getAttack()) && defender.canAttack()) {
 			//defender counter-attack if not dead
 			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
 			try {

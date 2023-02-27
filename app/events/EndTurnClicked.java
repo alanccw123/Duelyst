@@ -28,7 +28,7 @@ public class EndTurnClicked implements EventProcessor{
 	        BasicCommands.addPlayer1Notification(out, "Ai Turn", 2);
 	        gameState.setAiStep(0);
 	        gameState.setHumanMana(gameState.getHumanMana() + 1);
-	        BasicCommands.setPlayer2Mana(out, gameState.ai);
+	        BasicCommands.setPlayer2Mana(out, gameState.getAi());
 	        BasicCommands.setPlayer1Mana(out, defaultMana);
 	        boolean handFull = true;
 	        if (handFull) {
@@ -61,7 +61,7 @@ public class EndTurnClicked implements EventProcessor{
 	        gameState.something = true;
 	        gameState.setHumanStep(0);
 	        gameState.setAiMana(gameState.getAiMana() + 1);
-	        BasicCommands.setPlayer1Mana(out, gameState.player);
+	        BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
 	        BasicCommands.setPlayer2Mana(out, defaultMana);
 	        BasicCommands.addPlayer1Notification(out, "Your Turn", 2);
 	    }

@@ -36,11 +36,10 @@ public class Initalize implements EventProcessor{
 		gameState.humanTurn = true;
 		gameState.something = true;
 		gameState.initalize();
-		 
-		BasicCommands.setPlayer1Health(out, gameState.player);
-		BasicCommands.setPlayer2Health(out, gameState.ai);
-		BasicCommands.setPlayer1Mana(out, gameState.player);
-		BasicCommands.setPlayer2Mana(out, gameState.ai);
+		// BasicCommands.setPlayer1Health(out, gameState.player);
+		// BasicCommands.setPlayer2Health(out, gameState.ai);
+		// BasicCommands.setPlayer1Mana(out, gameState.player);
+		// BasicCommands.setPlayer2Mana(out, gameState.ai);
 
 
 		
@@ -56,14 +55,12 @@ public class Initalize implements EventProcessor{
 		avatar1.setPlayer(1);
 		avatar1.setAttack(2);
 		avatar1.setHealth(20);
-		// initial1.setUnit(avatar1);
+		avatar1.resetAction();
 		
 		BasicCommands.drawUnit(out, avatar1, initial1);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		
 		BasicCommands.setUnitAttack(out, avatar1, avatar1.getAttack());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-
 		BasicCommands.setUnitHealth(out, avatar1, avatar1.getHealth());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
@@ -74,14 +71,12 @@ public class Initalize implements EventProcessor{
 		avatar2.setPlayer(2);
 		avatar2.setAttack(2);
 		avatar2.setHealth(20);
-		// initial2.setUnit(avatar2);
+		avatar2.resetAction();
 		
 		BasicCommands.drawUnit(out, avatar2, initial2);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		
 		BasicCommands.setUnitAttack(out, avatar2, avatar2.getAttack());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-
 		BasicCommands.setUnitHealth(out, avatar2, avatar2.getHealth());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
@@ -95,14 +90,12 @@ public class Initalize implements EventProcessor{
 		avatar3.setPlayer(2);
 		avatar3.setAttack(2);
 		avatar3.setHealth(20);
-		// initial3.setUnit(avatar3);
+		avatar3.resetAction();
 		
 		BasicCommands.drawUnit(out, avatar3, initial3);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		
 		BasicCommands.setUnitAttack(out, avatar3, avatar3.getAttack());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-
 		BasicCommands.setUnitHealth(out, avatar3, avatar3.getHealth());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		//this avatar is for testing
@@ -114,32 +107,32 @@ public class Initalize implements EventProcessor{
 		avatar4.setPlayer(2);
 		avatar4.setAttack(2);
 		avatar4.setHealth(20);
-		// initial4.setUnit(avatar4);
+		avatar4.resetAction();
 		
 		BasicCommands.drawUnit(out, avatar4, initial4);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		
 		BasicCommands.setUnitAttack(out, avatar4, avatar4.getAttack());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-
 		BasicCommands.setUnitHealth(out, avatar4, avatar4.getHealth());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		//this avatar is for testing
 		
 		
 		// setPlayer1Health
-		Player humanPlayer = new Player(20, 2);
-		BasicCommands.setPlayer1Health(out, humanPlayer);
+		BasicCommands.setPlayer1Health(out, gameState.getPlayer());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		BasicCommands.setPlayer1Mana(out, humanPlayer);
+		BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
 
 		// setPlayer2Health
-		Player aiPlayer = new Player(20, 2);
-		BasicCommands.setPlayer2Health(out, aiPlayer);
+		BasicCommands.setPlayer2Health(out, gameState.getAi());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		BasicCommands.setPlayer2Mana(out, aiPlayer);
+		BasicCommands.setPlayer2Mana(out, gameState.getAi());
 
-		
+		//display starting Hand for player
+		for (int i = 0; i < 3; i++) {
+			gameState.playerDrawCard();
+		}
+		gameState.displayHand(out);
 		
 		// User 1 makes a change
 		// this executes the command demo, comment out this when implementing your solution

@@ -13,6 +13,7 @@ import structures.Board;
 
 import structures.GameState;
 import structures.basic.Tile;
+import structures.basic.Unit;
 import utils.AttackChecker;
 import utils.MovementChecker;
 
@@ -45,46 +46,69 @@ public class TileClicked implements EventProcessor{
 		if (!gameState.isReady()) {
 			return;
 		}
-
-		
-
 		
 		
 		//the user clicks on a new tile
 		if (gameState.unitLastClicked == null) {
 			
 			if (clicked.isHasUnit()) {
-				
-				//if the clicked tile is occupied, lists of tiles for movement & attack should be generated respectively
-				List<Tile> range = MovementChecker.checkMovement(clicked, board);
-				List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, clicked.getUnit().getPlayer());
-				
-				// highlight the tiles for movement in white
-				for (Tile tile : range) {
-					BasicCommands.drawTile(out, tile, 1);
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					gameState.highlighted.add(tile);
-				}
-				
-				// highlight the tiles for attack in red
-				for (Tile tile : attackable) {
-					BasicCommands.drawTile(out, tile, 2);
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+
+				Unit selected = clicked.getUnit();
+
+				if (selected.canMove()) {
+					//if the clicked tile is occupied, lists of tiles for movement & attack should be generated respectively
+					List<Tile> range = MovementChecker.checkMovement(clicked, board);
+					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer());
+					
+					// highlight the tiles for movement in white
+					for (Tile tile : range) {
+						BasicCommands.drawTile(out, tile, 1);
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						gameState.highlightedForMovement.add(tile);
 					}
 					
-					gameState.highlightedForAttack.add(tile);
+					// highlight the tiles for attack in red
+					for (Tile tile : attackable) {
+						BasicCommands.drawTile(out, tile, 2);
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						
+						gameState.highlightedForAttack.add(tile);
+					}
+
+					// keep tracked of the unit & tile clicked
+					gameState.unitLastClicked = selected;
+					gameState.tileLastClicked = clicked;
+				}else if (selected.canAttack()) {
+					List<Tile> attackable = AttackChecker.checkAttackRange(clicked, board, selected.getPlayer());
+					// highlight the tiles for attack in red
+					for (Tile tile : attackable) {
+						BasicCommands.drawTile(out, tile, 2);
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						
+						gameState.highlightedForAttack.add(tile);
+					}
+
+					// keep tracked of the unit & tile clicked
+					gameState.unitLastClicked = selected;
+					gameState.tileLastClicked = clicked;
 				}
 				
+				
 				// keep tracked of the unit & tile clicked
-				gameState.unitLastClicked = clicked.getUnit();
-				gameState.tilelastClicked = clicked;
+				// gameState.unitLastClicked = selected;
+				// gameState.tileLastClicked = clicked;
 				
 			}
 			
@@ -94,7 +118,7 @@ public class TileClicked implements EventProcessor{
 			
 			
 			// user clicks on a target for movement
-			if (gameState.highlighted.contains(clicked)) {
+			if (gameState.highlightedForMovement.contains(clicked)) {
 				gameState.clearhighlight(out);
 				gameState.moveUnit(gameState.unitLastClicked, clicked, out);	
 			
@@ -104,7 +128,7 @@ public class TileClicked implements EventProcessor{
 				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
 			
 			// user clicks on the same unit twice to cancelled the selection
-			}else if (clicked == gameState.tilelastClicked) {
+			}else if (clicked == gameState.tileLastClicked) {
 				gameState.clearhighlight(out);
 			// user clicks on a random tile, no action is performed
 			}else {
@@ -115,9 +139,7 @@ public class TileClicked implements EventProcessor{
 			//so that the event-processor is ready to process a new action for another unit	
 			gameState.unitLastClicked = null;
 			
-		}
-		
-			
+		}	
 		
 
 	}
