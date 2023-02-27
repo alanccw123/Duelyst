@@ -24,7 +24,7 @@ import utils.StaticConfFiles;
 public class GameState {
 
 
-	
+	// turn and Player related attributes
 	public boolean playerTurn = false;
 	public boolean something = false;
 	private int turnNum = 1;
@@ -143,7 +143,8 @@ public class GameState {
 	// for testing demo
 	public boolean gameInitalised = false;
 
-	
+
+	// cards and units related attributes
 	private Board gameBoard = new Board();
 
 	private List<Card> playerDeck = OrderedCardLoader.getPlayer1Cards();
@@ -224,7 +225,8 @@ public class GameState {
 			e.printStackTrace();
 		}
 		playerUnits.add(unit);
-		unit.setPlayer(1);		
+		unit.setPlayer(1);
+		unit.setPositionByTile(tile);		
 	}
 
 	public void summonAIUnit(Unit unit, Tile tile, ActorRef out) {
@@ -249,7 +251,8 @@ public class GameState {
 			e.printStackTrace();
 		}
 		AIUnits.add(unit);
-		unit.setPlayer(2);		
+		unit.setPlayer(2);
+		unit.setPositionByTile(tile);	
 	}
 
 	public void addPlayerUnit(Unit unit) {
@@ -267,13 +270,22 @@ public class GameState {
 	public void removeAIUnit(Unit unit) {
 		AIUnits.remove(unit);
 	}
+
+	public List<Unit> getPlayerUnits() {
+		return playerUnits;
+	}
 	
+	public List<Unit> getAIUnits() {
+		return AIUnits;
+	}
+
 	public Unit unitLastClicked;
 	public Tile tileLastClicked;
 	public Card cardLastClicked;
 	
 	public List<Tile> highlightedForMovement = new ArrayList<>();
 	public List<Tile> highlightedForAttack = new ArrayList<>();
+	public List<Tile> highlightedForCard = new ArrayList<>();
 	
 	//attribute to keep track of whether moving animation is playing
 	private boolean ready = true;

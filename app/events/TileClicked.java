@@ -16,6 +16,7 @@ import structures.basic.Tile;
 import structures.basic.Unit;
 import utils.AttackChecker;
 import utils.MovementChecker;
+import views.html.defaultpages.todo;
 
 /**
  * Indicates that the user has clicked an object on the game canvas, in this case a tile.
@@ -60,6 +61,11 @@ public class TileClicked implements EventProcessor{
 			if (clicked.isHasUnit()) {
 
 				Unit selected = clicked.getUnit();
+
+				// cannot operate on AI's units
+				if (selected.getPlayer() != 1) {
+					return;
+				}
 
 				if (selected.canMove()) {
 					//if the clicked tile is occupied, lists of tiles for movement & attack should be generated respectively
@@ -133,6 +139,12 @@ public class TileClicked implements EventProcessor{
 				gameState.clearhighlight(out);	
 				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
 			
+			// user clicks on a target for playing a card
+			}else if (gameState.highlightedForCard.contains(clicked)) {
+				gameState.clearhighlight(out);
+				// to-do
+
+
 			// user clicks on the same unit twice to cancelled the selection
 			}else if (clicked == gameState.tileLastClicked) {
 				gameState.clearhighlight(out);

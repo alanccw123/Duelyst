@@ -1,5 +1,8 @@
 package structures.basic;
 
+import java.util.List;
+
+import structures.GameState;
 
 /**
  * This is the base representation of a Card which is rendered in the player's hand.
@@ -19,6 +22,14 @@ public class Card {
 	
 	MiniCard miniCard;
 	BigCard bigCard;
+
+	public void checkTargets() {
+		//to-do
+	}
+
+	public void playCard() {
+		//to-do
+	}
 	
 	public Card() {};
 	
