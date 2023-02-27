@@ -8,8 +8,10 @@ import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.basic.*;
 import utils.AttackChecker;
+import utils.BasicObjectBuilders;
 import utils.MovementChecker;
 import utils.OrderedCardLoader;
+import utils.StaticConfFiles;
 
 
 /**
@@ -23,13 +25,13 @@ public class GameState {
 
 
 	
-	public boolean humanTurn = false;
+	public boolean playerTurn = false;
 	public boolean something = false;
-
+	private int turnNum = 1;
 	private int humanStep;
 	private int aiStep;
-	private Player player = new Player(20, 2);
-	private Player ai = new Player(20, 2);
+	private Player player = new Player(20, 0);
+	private Player ai = new Player(20, 0);
 
 
 	public Player getPlayer() {
@@ -37,6 +39,30 @@ public class GameState {
 	}
 	public Player getAi() {
 		return ai;
+	}
+	public int getTurnNum() {
+		return turnNum;
+	}
+
+	public boolean isPlayerTurn() {
+		return playerTurn;
+	}
+
+	public void changeTurn() {
+		playerTurn = !playerTurn;
+	}
+
+	public void incrementTurn() {
+		turnNum++;
+	}
+
+	public void resetAllAction() {
+		for (Unit unit : playerUnits) {
+			unit.resetAction();
+		}
+		for (Unit unit : AIUnits) {
+			unit.resetAction();
+		}
 	}
 
 
@@ -126,26 +152,31 @@ public class GameState {
 	private List<Card> playerHand = new ArrayList<>();
 	private List<Card> AIHand = new ArrayList<>();
 
-	public void playerDrawCard() {
+	private List<Unit> playerUnits = new ArrayList<>();
+	private List<Unit> AIUnits = new ArrayList<>();
+
+	public boolean playerDrawCard() {
 		if (playerDeck.isEmpty()) {
 			// run of cards, player lose
-			return;
 		}
 		Card card = playerDeck.remove(0);
 		if (playerHand.size() < 6) {
 			playerHand.add(card);
+			return true;
 		}
+		return false;
 	}
 
-	public void AIDrawCard() {
+	public boolean AIDrawCard() {
 		if (AIDeck.isEmpty()) {
 			// run of cards, ai lose
-			return;
 		}
 		Card card = AIDeck.remove(0);
 		if (AIHand.size() < 6) {
 			AIHand.add(card);
+			return true;
 		}
+		return false;
 	}
 
 	public void displayHand(ActorRef out) {
@@ -170,7 +201,72 @@ public class GameState {
 	public Card getPlayerCard(int index) {
 		return playerHand.get(index - 1);
 	}
-	
+
+	public void summonPlayerUnit(Unit unit, Tile tile, ActorRef out) {
+		EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+		BasicCommands.playEffectAnimation(out, summon, tile);
+		BasicCommands.drawUnit(out, unit, tile);
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		playerUnits.add(unit);
+		unit.setPlayer(1);		
+	}
+
+	public void summonAIUnit(Unit unit, Tile tile, ActorRef out) {
+		EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+		BasicCommands.playEffectAnimation(out, summon, tile);
+		BasicCommands.drawUnit(out, unit, tile);
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		AIUnits.add(unit);
+		unit.setPlayer(2);		
+	}
+
+	public void addPlayerUnit(Unit unit) {
+		playerUnits.add(unit);
+	}
+
+	public void addAIUnit(Unit unit) {
+		AIUnits.add(unit);
+	}
+
+	public void removePlayerUnit(Unit unit) {
+		playerUnits.remove(unit);
+	}
+
+	public void removeAIUnit(Unit unit) {
+		AIUnits.remove(unit);
+	}
 	
 	public Unit unitLastClicked;
 	public Tile tileLastClicked;

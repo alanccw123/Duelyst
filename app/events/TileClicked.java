@@ -42,7 +42,13 @@ public class TileClicked implements EventProcessor{
 		Board board = gameState.getGameBoard();
 		
 		Tile clicked = board.getTile(tilex, tiley);
+
+		// do nothing if it is not player's turn
+		if (!gameState.isPlayerTurn()) {
+			return;
+		}
 		
+		// do nothing when some moving animation is playing
 		if (!gameState.isReady()) {
 			return;
 		}

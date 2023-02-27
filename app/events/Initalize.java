@@ -33,7 +33,7 @@ public class Initalize implements EventProcessor{
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 
 
-		gameState.humanTurn = true;
+		gameState.changeTurn();
 		gameState.something = true;
 		gameState.initalize();
 		// BasicCommands.setPlayer1Health(out, gameState.player);
@@ -56,6 +56,7 @@ public class Initalize implements EventProcessor{
 		avatar1.setAttack(2);
 		avatar1.setHealth(20);
 		avatar1.resetAction();
+		gameState.addPlayerUnit(avatar1);
 		
 		BasicCommands.drawUnit(out, avatar1, initial1);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
@@ -72,6 +73,7 @@ public class Initalize implements EventProcessor{
 		avatar2.setAttack(2);
 		avatar2.setHealth(20);
 		avatar2.resetAction();
+		gameState.addAIUnit(avatar2);
 		
 		BasicCommands.drawUnit(out, avatar2, initial2);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
@@ -91,6 +93,7 @@ public class Initalize implements EventProcessor{
 		avatar3.setAttack(2);
 		avatar3.setHealth(20);
 		avatar3.resetAction();
+		gameState.addAIUnit(avatar3);
 		
 		BasicCommands.drawUnit(out, avatar3, initial3);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
@@ -108,6 +111,7 @@ public class Initalize implements EventProcessor{
 		avatar4.setAttack(2);
 		avatar4.setHealth(20);
 		avatar4.resetAction();
+		gameState.addAIUnit(avatar4);
 		
 		BasicCommands.drawUnit(out, avatar4, initial4);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
@@ -118,17 +122,18 @@ public class Initalize implements EventProcessor{
 		//this avatar is for testing
 		
 		
-		// setPlayer1Health
+		// setPlayer1Health&mana
+		gameState.setHumanMana(gameState.getTurnNum() + 1);
 		BasicCommands.setPlayer1Health(out, gameState.getPlayer());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
 
-		// setPlayer2Health
+		// setPlayer2Health&mana
 		BasicCommands.setPlayer2Health(out, gameState.getAi());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setPlayer2Mana(out, gameState.getAi());
 
-		//display starting Hand for player
+		//draw three cards from deck to form starting hand
 		for (int i = 0; i < 3; i++) {
 			gameState.playerDrawCard();
 		}

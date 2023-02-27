@@ -21,49 +21,63 @@ public class EndTurnClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-	    if (gameState.humanTurn) {
-	        Player defaultMana = new Player(20, 0);
-	        gameState.humanTurn = false;
-	        gameState.something = false;
-	        BasicCommands.addPlayer1Notification(out, "Ai Turn", 2);
-	        gameState.setAiStep(0);
-	        gameState.setHumanMana(gameState.getHumanMana() + 1);
-	        BasicCommands.setPlayer2Mana(out, gameState.getAi());
-	        BasicCommands.setPlayer1Mana(out, defaultMana);
-	        boolean handFull = true;
-	        if (handFull) {
-	            BasicCommands.addPlayer1Notification(out, "Loss Card", 2);
-	        }
-	        ai aii = new ai(out, gameState, message);
-	        aii.start();
+	    if (gameState.isPlayerTurn()) {
+	        // Player defaultMana = new Player(20, 0);
+	        // gameState.humanTurn = false;
+	        // gameState.something = false;
+	        // gameState.setAiStep(0);
+			gameState.changeTurn();
+	        gameState.setHumanMana(0);
+	        BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
+
+	        if (gameState.playerDrawCard()) {
+	            BasicCommands.addPlayer1Notification(out, "Draw a card", 2);
+	        }else{
+				BasicCommands.addPlayer1Notification(out, "Your hand is full!", 2);
+			}
+
+			BasicCommands.addPlayer1Notification(out, "AI's Turn", 2);
+			gameState.setAiMana(gameState.getTurnNum() + 1);
+			BasicCommands.setPlayer2Mana(out, gameState.getAi());
+			gameState.resetAllAction();
+	        AI opponent = new AI(out, gameState, message);
+	        opponent.start();
 	    }
 	}
 
-	class ai extends Thread {
+	class AI extends Thread {
 	    ActorRef out;
 	    GameState gameState;
 	    JsonNode message;
 
-	    public ai(ActorRef out, GameState gameState, JsonNode message) {
+	    public AI(ActorRef out, GameState gameState, JsonNode message) {
 	        this.out = out;
 	        this.gameState = gameState;
 	        this.message = message;
 	    }
 
 	    public void run() {
+			// code for AI goes in here!!!!
 	        try {
 	            Thread.sleep(5000);
 	        } catch (InterruptedException e) {
 	            e.printStackTrace();
 	        }
-	        Player defaultMana = new Player(20, 0);
-	        gameState.humanTurn = true;
-	        gameState.something = true;
-	        gameState.setHumanStep(0);
-	        gameState.setAiMana(gameState.getAiMana() + 1);
-	        BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
-	        BasicCommands.setPlayer2Mana(out, defaultMana);
+	        // Player defaultMana = new Player(20, 0);
+	        // gameState.something = true;
+	        // gameState.setHumanStep(0);
+	        gameState.setAiMana(0);
+	        BasicCommands.setPlayer2Mana(out, gameState.getAi());
+
+			gameState.AIDrawCard();
+
+			gameState.incrementTurn();
+			gameState.setHumanMana(gameState.getTurnNum() + 1);
+
 	        BasicCommands.addPlayer1Notification(out, "Your Turn", 2);
+			BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
+			gameState.resetAllAction();
+			gameState.changeTurn();
 	    }
 	}
 }
