@@ -1,11 +1,17 @@
 package structures.basic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import akka.actor.ActorRef;
+import commands.BasicCommands;
 import structures.Board;
 import structures.GameState;
+import utils.BasicObjectBuilders;
 import utils.MovementChecker;
+import utils.StaticConfFiles;
 
 /**
  * This is the base representation of a Card which is rendered in the player's hand.
@@ -59,9 +65,70 @@ public class Card {
 		
 	}
 
-	public void playCard() {
-		//to-do
+	public void playCard(ActorRef out, GameState gameState, Tile target) {
+		//update the gamestate
+
+		Unit unit = BasicObjectBuilders.loadUnit(mapping.get(cardname), id, Unit.class);
+		unit.setPositionByTile(target);
+
+		if (gameState.isPlayerTurn()) {
+			unit.setPlayer(1);
+			gameState.addPlayerUnit(unit);
+			gameState.setHumanMana(gameState.getHumanMana() - manacost);
+			BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
+		}else {
+			unit.setPlayer(2);
+			gameState.addAIUnit(unit);
+			gameState.setAiMana(gameState.getAiMana() - manacost);
+			BasicCommands.setPlayer2Mana(out, gameState.getAi());
+		}
+
+		unit.setAttack(bigCard.getAttack());
+		unit.setHealth(bigCard.getHealth());
+
+		// render the unit on the frontend
+		EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+		BasicCommands.playEffectAnimation(out, summon, target);
+		BasicCommands.drawUnit(out, unit, target);
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+		try {
+			Thread.sleep(5);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 	}
+
+	private static final Map<String, String> mapping = new HashMap<>();
+    static {
+        mapping.put("Comodo Charger", StaticConfFiles.u_comodo_charger);
+        mapping.put("Hailstone Golem", StaticConfFiles.u_hailstone_golem);
+		mapping.put("Azure Herald", StaticConfFiles.u_azure_herald);
+		mapping.put("Azurite Lion", StaticConfFiles.u_azurite_lion);
+		mapping.put("Pureblade Enforcer", StaticConfFiles.u_pureblade_enforcer);
+		mapping.put("Ironcliff Guardian", StaticConfFiles.u_ironcliff_guardian);
+		mapping.put("Silverguard Knight", StaticConfFiles.u_silverguard_knight);
+		mapping.put("Fire Spitter", StaticConfFiles.u_fire_spitter);
+		mapping.put("Blaze Hound", StaticConfFiles.u_blaze_hound);
+		mapping.put("Bloodshard Golem", StaticConfFiles.u_bloodshard_golem);
+		// mapping.put("Hailstone Golem", StaticConfFiles.u_hailstone_golemR);
+		mapping.put("Planar Scout", StaticConfFiles.u_planar_scout);
+		mapping.put("Pyromancer", StaticConfFiles.u_pyromancer);
+		mapping.put("Rock Pulveriser", StaticConfFiles.u_rock_pulveriser);
+		mapping.put("Serpenti", StaticConfFiles.u_serpenti);
+		mapping.put("WindShrike", StaticConfFiles.u_windshrike);
+    }
 	
 	public Card() {};
 	

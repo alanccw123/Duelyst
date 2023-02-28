@@ -146,7 +146,7 @@ public class TileClicked implements EventProcessor{
 				gameState.removePlayerCard(index);
 				gameState.displayHand(out);
 				// to-do
-				gameState.cardLastClicked.playCard();
+				gameState.cardLastClicked.playCard(out, gameState, clicked);
 
 
 			// user clicks on the same unit twice to cancelled the selection

@@ -30,7 +30,6 @@ public class CardClicked implements EventProcessor{
 		int handPosition = message.get("position").asInt();
 		Card selected = gameState.getPlayerCard(handPosition);
 		
-		//to-do
 		// do nothing if it is not player's turn
 		if (!gameState.isPlayerTurn()) {
 			return;
@@ -41,9 +40,14 @@ public class CardClicked implements EventProcessor{
 			return;
 		}
 
+		//player selects a new card
 		if (gameState.cardLastClicked == null) {
 
 			List<Tile> tagets = selected.checkTargets(gameState, 1);
+
+			if (selected.getManacost() > gameState.getHumanMana()) {
+				return;
+			}
 
 			for (Tile tile : tagets) {
 				if (tile.isHasUnit() && tile.getUnit().getPlayer() == 2) {
@@ -65,6 +69,8 @@ public class CardClicked implements EventProcessor{
 				gameState.highlightedForCard.add(tile);
 				gameState.cardLastClicked = selected;
 			}
+
+		// the player clicks on a selected card to de-select
 		}else if (selected == gameState.cardLastClicked) {
 			BasicCommands.drawCard(out, selected, handPosition, 0);
 			gameState.clearhighlight(out);

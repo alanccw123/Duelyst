@@ -49,7 +49,7 @@ public class Initalize implements EventProcessor{
 		
 		gameBoard.initialize(out);
 		
-		Unit avatar1 = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, gameState.getUnitID(), Unit.class);
+		Unit avatar1 = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 99, Unit.class);
 		Tile initial1 = gameBoard.getTile(1,2);
 		avatar1.setPositionByTile(initial1);
 		avatar1.setPlayer(1);
@@ -66,7 +66,7 @@ public class Initalize implements EventProcessor{
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
 
-		Unit avatar2 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
+		Unit avatar2 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 100, Unit.class);
 		Tile initial2 = gameBoard.getTile(7,2);
 		avatar2.setPositionByTile(initial2);
 		avatar2.setPlayer(2);
@@ -86,39 +86,39 @@ public class Initalize implements EventProcessor{
 		
 		
 		// this avatar is for testing
-		Unit avatar3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
-		Tile initial3 = gameBoard.getTile(7,4);
-		avatar3.setPositionByTile(initial3);
-		avatar3.setPlayer(2);
-		avatar3.setAttack(2);
-		avatar3.setHealth(20);
-		avatar3.resetAction();
-		gameState.addAIUnit(avatar3);
+		// Unit avatar3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
+		// Tile initial3 = gameBoard.getTile(7,4);
+		// avatar3.setPositionByTile(initial3);
+		// avatar3.setPlayer(2);
+		// avatar3.setAttack(2);
+		// avatar3.setHealth(20);
+		// avatar3.resetAction();
+		// gameState.addAIUnit(avatar3);
 		
-		BasicCommands.drawUnit(out, avatar3, initial3);
-		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		BasicCommands.setUnitAttack(out, avatar3, avatar3.getAttack());
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		BasicCommands.setUnitHealth(out, avatar3, avatar3.getHealth());
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		//this avatar is for testing
+		// BasicCommands.drawUnit(out, avatar3, initial3);
+		// try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+		// BasicCommands.setUnitAttack(out, avatar3, avatar3.getAttack());
+		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		// BasicCommands.setUnitHealth(out, avatar3, avatar3.getHealth());
+		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		// //this avatar is for testing
 		
-		// this avatar is for testing
-		Unit avatar4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
-		Tile initial4 = gameBoard.getTile(3,4);
-		avatar4.setPositionByTile(initial4);
-		avatar4.setPlayer(2);
-		avatar4.setAttack(2);
-		avatar4.setHealth(20);
-		avatar4.resetAction();
-		gameState.addAIUnit(avatar4);
+		// // this avatar is for testing
+		// Unit avatar4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
+		// Tile initial4 = gameBoard.getTile(3,4);
+		// avatar4.setPositionByTile(initial4);
+		// avatar4.setPlayer(2);
+		// avatar4.setAttack(2);
+		// avatar4.setHealth(20);
+		// avatar4.resetAction();
+		// gameState.addAIUnit(avatar4);
 		
-		BasicCommands.drawUnit(out, avatar4, initial4);
-		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		BasicCommands.setUnitAttack(out, avatar4, avatar4.getAttack());
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		BasicCommands.setUnitHealth(out, avatar4, avatar4.getHealth());
-		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		// BasicCommands.drawUnit(out, avatar4, initial4);
+		// try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
+		// BasicCommands.setUnitAttack(out, avatar4, avatar4.getAttack());
+		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+		// BasicCommands.setUnitHealth(out, avatar4, avatar4.getHealth());
+		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		//this avatar is for testing
 		
 		

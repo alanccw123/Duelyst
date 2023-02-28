@@ -455,6 +455,8 @@ public class GameState {
 			}
 			BasicCommands.deleteUnit(out, unit);
 			gameBoard.searchFor(unit).removeUnit();
+			playerUnits.remove(unit);
+			AIUnits.remove(unit);
 			return false;
 		}else {
 			// the unit survives
