@@ -65,6 +65,10 @@ public class Unit {
 		this.player = player;
 	}
 
+	public Tile getTile() {
+		return current;
+	}
+
 	@JsonIgnore
 	private int maxAttackAction = 1;
 	@JsonIgnore

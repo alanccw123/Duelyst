@@ -186,9 +186,13 @@ public class GameState {
 			BasicCommands.drawCard(out, card, counter, 0);
 			counter++;
 		}
-		for (int i = counter + 1; i <= 6; i++) {
+		for (int i = counter; i <= 6; i++) {
 			BasicCommands.deleteCard(out, i);
 		}
+	}
+
+	public int getCardPosition(Card card) {
+		return playerHand.indexOf(card) + 1;
 	}
 
 	public void removePlayerCard(int index) {
@@ -320,9 +324,18 @@ public class GameState {
 				e.printStackTrace();
 			}
 		}
+		for (Tile tile : highlightedForCard) {
+			BasicCommands.drawTile(out, tile, 0);
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		
 		highlightedForMovement.clear();
 		highlightedForAttack.clear();
+		highlightedForCard.clear();
 	}
 	
 	// helper method to move an unit to a given tile

@@ -35,6 +35,7 @@ public class EndTurnClicked implements EventProcessor{
 	        }else{
 				BasicCommands.addPlayer1Notification(out, "Your hand is full!", 2);
 			}
+			gameState.displayHand(out);
 
 			BasicCommands.addPlayer1Notification(out, "AI's Turn", 2);
 			gameState.setAiMana(gameState.getTurnNum() + 1);

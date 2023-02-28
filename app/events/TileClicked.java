@@ -56,7 +56,7 @@ public class TileClicked implements EventProcessor{
 		
 		
 		//the user clicks on a new tile
-		if (gameState.unitLastClicked == null) {
+		if (gameState.unitLastClicked == null && gameState.cardLastClicked == null) {
 			
 			if (clicked.isHasUnit()) {
 
@@ -142,12 +142,17 @@ public class TileClicked implements EventProcessor{
 			// user clicks on a target for playing a card
 			}else if (gameState.highlightedForCard.contains(clicked)) {
 				gameState.clearhighlight(out);
+				int index = gameState.getCardPosition(gameState.cardLastClicked);
+				gameState.removePlayerCard(index);
+				gameState.displayHand(out);
 				// to-do
+				gameState.cardLastClicked.playCard();
 
 
 			// user clicks on the same unit twice to cancelled the selection
 			}else if (clicked == gameState.tileLastClicked) {
 				gameState.clearhighlight(out);
+
 			// user clicks on a random tile, no action is performed
 			}else {
 				return;
@@ -156,6 +161,7 @@ public class TileClicked implements EventProcessor{
 			//clear highlight and reference to the last clicked unit
 			//so that the event-processor is ready to process a new action for another unit	
 			gameState.unitLastClicked = null;
+			gameState.cardLastClicked = null;
 			
 		}	
 		

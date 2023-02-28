@@ -1,6 +1,10 @@
 package events;
 
 import structures.GameState;
+import structures.basic.*;
+
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
@@ -24,8 +28,50 @@ public class CardClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		int handPosition = message.get("position").asInt();
+		Card selected = gameState.getPlayerCard(handPosition);
 		
 		//to-do
+		// do nothing if it is not player's turn
+		if (!gameState.isPlayerTurn()) {
+			return;
+		}
+		
+		// do nothing when some moving animation is playing
+		if (!gameState.isReady()) {
+			return;
+		}
+
+		if (gameState.cardLastClicked == null) {
+
+			List<Tile> tagets = selected.checkTargets(gameState, 1);
+
+			for (Tile tile : tagets) {
+				if (tile.isHasUnit() && tile.getUnit().getPlayer() == 2) {
+					BasicCommands.drawTile(out, tile, 2);
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}else{
+					BasicCommands.drawTile(out, tile, 1);
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				BasicCommands.drawCard(out, selected, handPosition, 1);
+				gameState.highlightedForCard.add(tile);
+				gameState.cardLastClicked = selected;
+			}
+		}else if (selected == gameState.cardLastClicked) {
+			BasicCommands.drawCard(out, selected, handPosition, 0);
+			gameState.clearhighlight(out);
+			gameState.cardLastClicked = null;
+		}
+			
+		
 		
 	}
 }
