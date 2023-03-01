@@ -68,12 +68,13 @@ public class TileClicked implements EventProcessor{
 					return;
 				}
 
+
 				// check if the unit has movement action left
 				if (selected.canMove()) {
 					// generate lists of tiles for movement & attack
 					List<Tile> range = MovementChecker.checkMovement(clicked, board);
 					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer());
-					
+
 					// highlight the tiles for movement in white
 					for (Tile tile : range) {
 						BasicCommands.drawTile(out, tile, 1);
@@ -97,15 +98,21 @@ public class TileClicked implements EventProcessor{
 						gameState.highlightedForAttack.add(tile);
 					}
 
-					// keep tracked of the unit & tile clicked
+					// keep tracked of the unit selected
 					gameState.unitLastClicked = selected;
-					gameState.tileLastClicked = clicked;
 					String debug = String.format("selected id%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
 					BasicCommands.addPlayer1Notification(out, debug, 2);
 
 				// if the unit has moved but not yet attacked
 				}else if (selected.canAttack()) {
+					// only check 1 tile surrounding for target
 					List<Tile> attackable = AttackChecker.checkAttackRange(clicked, board, selected.getPlayer());
+
+					// should not select the unit if there is not valid target
+					if (attackable.isEmpty()) {
+						return;
+					}
+
 					// highlight the tiles for attack in red
 					for (Tile tile : attackable) {
 						BasicCommands.drawTile(out, tile, 2);
@@ -118,9 +125,9 @@ public class TileClicked implements EventProcessor{
 						gameState.highlightedForAttack.add(tile);
 					}
 
-					// keep tracked of the unit & tile clicked
+					// keep tracked of the unit selected
 					gameState.unitLastClicked = selected;
-					gameState.tileLastClicked = clicked;
+	
 
 					String debug = String.format("selected id%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
 					BasicCommands.addPlayer1Notification(out, debug, 2);
@@ -129,7 +136,7 @@ public class TileClicked implements EventProcessor{
 				
 			}
 			
-		// else if the player last clicked on a card
+		// else if the player last selected a card
 		}else if (gameState.cardLastClicked != null) {
 			// play the card if the tile clicked is valid
 			if (gameState.highlightedForCard.contains(clicked)) {
@@ -146,7 +153,7 @@ public class TileClicked implements EventProcessor{
 			}
 		}
 		
-		// if the user last clicked on an unit, this means the current clicked tile is a target for action
+		// else the user last selected an unit, this means the current clicked tile is a target for action
 		else {
 			
 			// user clicks on a target for movement

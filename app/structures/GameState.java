@@ -452,6 +452,7 @@ public class GameState {
 				e.printStackTrace();
 			}
 			unitTakeDamage(attacker, out, defender.getAttack());
+			defender.spendAttackAction();
 		}	
 				
 	}
