@@ -62,7 +62,7 @@ public class TileClicked implements EventProcessor{
 
 				// player clicks on an unit
 				Unit selected = clicked.getUnit();
-				
+
 				// cannot operate on AI's units
 				if (selected.getPlayer() != 1) {
 					return;
@@ -100,6 +100,8 @@ public class TileClicked implements EventProcessor{
 					// keep tracked of the unit & tile clicked
 					gameState.unitLastClicked = selected;
 					gameState.tileLastClicked = clicked;
+					String debug = String.format("selected id%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
+					BasicCommands.addPlayer1Notification(out, debug, 2);
 
 				// if the unit has moved but not yet attacked
 				}else if (selected.canAttack()) {
@@ -119,15 +121,33 @@ public class TileClicked implements EventProcessor{
 					// keep tracked of the unit & tile clicked
 					gameState.unitLastClicked = selected;
 					gameState.tileLastClicked = clicked;
+
+					String debug = String.format("selected id%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
+					BasicCommands.addPlayer1Notification(out, debug, 2);
 				}
 				
 				
 			}
 			
-			
-		}else {
-			// if the user last clicked on an unit or card, this means the current clicked tile is a target for action
-			
+		// else if the player last clicked on a card
+		}else if (gameState.cardLastClicked != null) {
+			// play the card if the tile clicked is valid
+			if (gameState.highlightedForCard.contains(clicked)) {
+				gameState.clearhighlight(out);
+				// remove card from hand
+				int index = gameState.getCardPosition(gameState.cardLastClicked);
+				gameState.removePlayerCard(index);
+				gameState.displayHand(out);
+				
+				// execute the card's effects
+				gameState.cardLastClicked.playCard(out, gameState, clicked);
+
+				gameState.cardLastClicked = null;
+			}
+		}
+		
+		// if the user last clicked on an unit, this means the current clicked tile is a target for action
+		else {
 			
 			// user clicks on a target for movement
 			if (gameState.highlightedForMovement.contains(clicked)) {
@@ -138,19 +158,10 @@ public class TileClicked implements EventProcessor{
 			}else if (gameState.highlightedForAttack.contains(clicked)) {
 				gameState.clearhighlight(out);	
 				gameState.attack(gameState.unitLastClicked, clicked.getUnit(), out);
-			
-			// user clicks on a target for playing a card
-			}else if (gameState.highlightedForCard.contains(clicked)) {
-				gameState.clearhighlight(out);
-				int index = gameState.getCardPosition(gameState.cardLastClicked);
-				gameState.removePlayerCard(index);
-				gameState.displayHand(out);
-				// to-do
-				gameState.cardLastClicked.playCard(out, gameState, clicked);
-
+			}
 
 			// user clicks on the same unit twice to cancelled the selection
-			}else if (clicked == gameState.tileLastClicked) {
+			else if (clicked == gameState.unitLastClicked.getTile()) {
 				gameState.clearhighlight(out);
 
 			// user clicks on a random tile, no action is performed
@@ -161,7 +172,6 @@ public class TileClicked implements EventProcessor{
 			//clear highlight and reference to the last clicked unit
 			//so that the event-processor is ready to process a new action for another unit	
 			gameState.unitLastClicked = null;
-			gameState.cardLastClicked = null;
 			
 		}	
 		

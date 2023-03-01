@@ -43,7 +43,7 @@ public class CardClicked implements EventProcessor{
 		}
 
 		//player selects a new card
-		if (gameState.cardLastClicked == null) {
+		if (gameState.cardLastClicked == null && gameState.unitLastClicked == null) {
 
 			// check if the player has enough mana
 			if (selected.getManacost() > gameState.getHumanMana()) {
