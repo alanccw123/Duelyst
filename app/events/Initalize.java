@@ -34,7 +34,7 @@ public class Initalize implements EventProcessor{
 
 
 		gameState.changeTurn();
-		gameState.something = true;
+		// gameState.something = true;
 		gameState.initalize();
 		// BasicCommands.setPlayer1Health(out, gameState.player);
 		// BasicCommands.setPlayer2Health(out, gameState.ai);
@@ -47,8 +47,10 @@ public class Initalize implements EventProcessor{
 		
 		Board gameBoard = gameState.getGameBoard();
 		
+		// render the board on the frontend
 		gameBoard.initialize(out);
 		
+		// place player's avatar
 		Unit avatar1 = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 99, Unit.class);
 		Tile initial1 = gameBoard.getTile(1,2);
 		avatar1.setPositionByTile(initial1);
@@ -65,7 +67,7 @@ public class Initalize implements EventProcessor{
 		BasicCommands.setUnitHealth(out, avatar1, avatar1.getHealth());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
-
+		// place AI's avatar
 		Unit avatar2 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 100, Unit.class);
 		Tile initial2 = gameBoard.getTile(7,2);
 		avatar2.setPositionByTile(initial2);
@@ -133,11 +135,17 @@ public class Initalize implements EventProcessor{
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setPlayer2Mana(out, gameState.getAi());
 
-		//draw three cards from deck to form starting hand
+		//draw three cards from player deck to form starting hand
 		for (int i = 0; i < 3; i++) {
 			gameState.playerDrawCard();
 		}
 		gameState.displayHand(out);
+		
+		// draw three cards from AI deck as well
+		for (int i = 0; i < 3; i++) {
+			gameState.AIDrawCard();
+		}
+
 		
 		// User 1 makes a change
 		// this executes the command demo, comment out this when implementing your solution

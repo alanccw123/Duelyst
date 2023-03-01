@@ -26,10 +26,7 @@ public class GameState {
 
 	// turn and Player related attributes
 	public boolean playerTurn = false;
-	public boolean something = false;
 	private int turnNum = 1;
-	private int humanStep;
-	private int aiStep;
 	private Player player = new Player(20, 0);
 	private Player ai = new Player(20, 0);
 
@@ -56,6 +53,7 @@ public class GameState {
 		turnNum++;
 	}
 
+	// reset attack & movement actions for all units
 	public void resetAllAction() {
 		for (Unit unit : playerUnits) {
 			unit.resetAction();
@@ -116,29 +114,31 @@ public class GameState {
 	
 	
 	
-	
-	public void addHumanStep(int step) {
-		humanStep = humanStep + step; 
-	}
-	public void addAiStep(int step) {
-		humanStep =+ step; 
-	}
-	
-	
-	public int getHumanStep() {
-		return humanStep;
-	}
-	public int getAiStep() {
-		return aiStep;
-	}
+	// public boolean something = false;
+	// private int humanStep;
+	// private int aiStep;
+	// public void addHumanStep(int step) {
+	// 	humanStep = humanStep + step; 
+	// }
+	// public void addAiStep(int step) {
+	// 	humanStep =+ step; 
+	// }
 	
 	
-	public void setHumanStep(int n) {
-		this.humanStep = n;
-	}
-	public void setAiStep(int n) {
-		this.aiStep = n;
-	}
+	// public int getHumanStep() {
+	// 	return humanStep;
+	// }
+	// public int getAiStep() {
+	// 	return aiStep;
+	// }
+	
+	
+	// public void setHumanStep(int n) {
+	// 	this.humanStep = n;
+	// }
+	// public void setAiStep(int n) {
+	// 	this.aiStep = n;
+	// }
 
 	// for testing demo
 	public boolean gameInitalised = false;
@@ -153,9 +153,12 @@ public class GameState {
 	private List<Card> playerHand = new ArrayList<>();
 	private List<Card> AIHand = new ArrayList<>();
 
+	// Lists containing all units for player and AI respectively
 	private List<Unit> playerUnits = new ArrayList<>();
 	private List<Unit> AIUnits = new ArrayList<>();
 
+	// draw a card from player deck to hand
+	// return a boolean indicating whether the draw is successful
 	public boolean playerDrawCard() {
 		if (playerDeck.isEmpty()) {
 			// run of cards, player lose
@@ -168,6 +171,9 @@ public class GameState {
 		return false;
 	}
 
+	
+	// draw a card from AI deck to hand
+	// return a boolean indicating whether the draw is successful
 	public boolean AIDrawCard() {
 		if (AIDeck.isEmpty()) {
 			// run of cards, ai lose
@@ -180,10 +186,17 @@ public class GameState {
 		return false;
 	}
 
+	// display the updated hand of player on the frontend
+	// call this method everytime after hand is changed
 	public void displayHand(ActorRef out) {
 		int counter = 1;
 		for (Card card : playerHand) {
 			BasicCommands.drawCard(out, card, counter, 0);
+			try {
+				Thread.sleep(5);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			counter++;
 		}
 		for (int i = counter; i <= 6; i++) {
@@ -207,57 +220,57 @@ public class GameState {
 		return playerHand.get(index - 1);
 	}
 
-	public void summonPlayerUnit(Unit unit, Tile tile, ActorRef out) {
-		EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
-		BasicCommands.playEffectAnimation(out, summon, tile);
-		BasicCommands.drawUnit(out, unit, tile);
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		playerUnits.add(unit);
-		unit.setPlayer(1);
-		unit.setPositionByTile(tile);		
-	}
+	// public void summonPlayerUnit(Unit unit, Tile tile, ActorRef out) {
+	// 	EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+	// 	BasicCommands.playEffectAnimation(out, summon, tile);
+	// 	BasicCommands.drawUnit(out, unit, tile);
+	// 	try {
+	// 		Thread.sleep(5);
+	// 	} catch (InterruptedException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// 	BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+	// 	try {
+	// 		Thread.sleep(5);
+	// 	} catch (InterruptedException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// 	BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+	// 	try {
+	// 		Thread.sleep(5);
+	// 	} catch (InterruptedException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// 	playerUnits.add(unit);
+	// 	unit.setPlayer(1);
+	// 	unit.setPositionByTile(tile);		
+	// }
 
-	public void summonAIUnit(Unit unit, Tile tile, ActorRef out) {
-		EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
-		BasicCommands.playEffectAnimation(out, summon, tile);
-		BasicCommands.drawUnit(out, unit, tile);
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-		try {
-			Thread.sleep(5);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		AIUnits.add(unit);
-		unit.setPlayer(2);
-		unit.setPositionByTile(tile);	
-	}
+	// public void summonAIUnit(Unit unit, Tile tile, ActorRef out) {
+	// 	EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
+	// 	BasicCommands.playEffectAnimation(out, summon, tile);
+	// 	BasicCommands.drawUnit(out, unit, tile);
+	// 	try {
+	// 		Thread.sleep(5);
+	// 	} catch (InterruptedException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// 	BasicCommands.setUnitAttack(out, unit, unit.getAttack());
+	// 	try {
+	// 		Thread.sleep(5);
+	// 	} catch (InterruptedException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// 	BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+	// 	try {
+	// 		Thread.sleep(5);
+	// 	} catch (InterruptedException e) {
+	// 		e.printStackTrace();
+	// 	}
+	// 	AIUnits.add(unit);
+	// 	unit.setPlayer(2);
+	// 	unit.setPositionByTile(tile);	
+	// }
 
 	public void addPlayerUnit(Unit unit) {
 		playerUnits.add(unit);
@@ -283,10 +296,13 @@ public class GameState {
 		return AIUnits;
 	}
 
+	// keep track of the objects last-clicked
+	// these values are useful in the eventprocessors'logic
 	public Unit unitLastClicked;
 	public Tile tileLastClicked;
 	public Card cardLastClicked;
 	
+	// keep track of the highlighted tiles on board
 	public List<Tile> highlightedForMovement = new ArrayList<>();
 	public List<Tile> highlightedForAttack = new ArrayList<>();
 	public List<Tile> highlightedForCard = new ArrayList<>();
@@ -294,8 +310,8 @@ public class GameState {
 	//attribute to keep track of whether moving animation is playing
 	private boolean ready = true;
 
+	// not used
 	private int unitID = 0;
-	
 	
 	public int getUnitID() {
         return unitID++;
@@ -338,8 +354,9 @@ public class GameState {
 		highlightedForCard.clear();
 	}
 	
-	// helper method to move an unit to a given tile
+	// move an unit to a given tile
 	public void moveUnit(Unit unit, Tile target, ActorRef out) {
+		// spend movement action
 		unit.spendMoveAction();
 		Tile current = gameBoard.searchFor(unit);
 		int x = current.getTilex();
@@ -361,23 +378,29 @@ public class GameState {
 			e.printStackTrace();
 		}
 
+		//update unit's new position
 		current.removeUnit();
 		unit.setPositionByTile(target);
 
 	}
 	
-	// helper method to perform an attack
+	// perform an attack
+	// takes the attcker and defender units as input
 	public void attack(Unit attacker, Unit defender, ActorRef out) {
-
+		//spend attacker's action
 		attacker.spendAttackAction();
 		
-		Tile current = gameBoard.searchFor(attacker);
-		Tile target = gameBoard.searchFor(defender);
+		// Tile current = gameBoard.searchFor(attacker);
+		// Tile target = gameBoard.searchFor(defender);
+
+		Tile current = attacker.getTile();
+		Tile target = defender.getTile();
 		
 		//if the attack target is out of reach
 		if (!AttackChecker.checkAttackRange(current, gameBoard, attacker.getPlayer()).contains(target)) {
 			
 			//need to move the unit into position first before attack
+
 			List<Tile> possibleTiles = MovementChecker.checkMovement(current, gameBoard);
 			
 			

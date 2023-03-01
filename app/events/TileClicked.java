@@ -60,15 +60,17 @@ public class TileClicked implements EventProcessor{
 			
 			if (clicked.isHasUnit()) {
 
+				// player clicks on an unit
 				Unit selected = clicked.getUnit();
-
+				
 				// cannot operate on AI's units
 				if (selected.getPlayer() != 1) {
 					return;
 				}
 
+				// check if the unit has movement action left
 				if (selected.canMove()) {
-					//if the clicked tile is occupied, lists of tiles for movement & attack should be generated respectively
+					// generate lists of tiles for movement & attack
 					List<Tile> range = MovementChecker.checkMovement(clicked, board);
 					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer());
 					
@@ -98,6 +100,8 @@ public class TileClicked implements EventProcessor{
 					// keep tracked of the unit & tile clicked
 					gameState.unitLastClicked = selected;
 					gameState.tileLastClicked = clicked;
+
+				// if the unit has moved but not yet attacked
 				}else if (selected.canAttack()) {
 					List<Tile> attackable = AttackChecker.checkAttackRange(clicked, board, selected.getPlayer());
 					// highlight the tiles for attack in red
@@ -118,15 +122,11 @@ public class TileClicked implements EventProcessor{
 				}
 				
 				
-				// keep tracked of the unit & tile clicked
-				// gameState.unitLastClicked = selected;
-				// gameState.tileLastClicked = clicked;
-				
 			}
 			
 			
 		}else {
-			// if the user last clicked on an unit, this means the current clicked tile is a target for action
+			// if the user last clicked on an unit or card, this means the current clicked tile is a target for action
 			
 			
 			// user clicks on a target for movement

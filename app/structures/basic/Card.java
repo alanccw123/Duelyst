@@ -32,8 +32,10 @@ public class Card {
 	MiniCard miniCard;
 	BigCard bigCard;
 
+	// check for targets to play the card on
+	// returns a list of tiles
+	// base version is for summoning units, overidden in child classes to implement spell cards
 	public List<Tile> checkTargets(GameState gameState, int player) {
-		//to-do
 		List<Unit> friendlyunits = new ArrayList<>();
 		List<Tile> targets = new ArrayList<>();
 		Board board = gameState.getGameBoard();
@@ -65,12 +67,15 @@ public class Card {
 		
 	}
 
+	// execute the effect of the card
+	// base version is for summoning units, overridden in child classes to implement spell cards
 	public void playCard(ActorRef out, GameState gameState, Tile target) {
-		//update the gamestate
-
+		
+		// create the corresponding unit
 		Unit unit = BasicObjectBuilders.loadUnit(mapping.get(cardname), id, Unit.class);
 		unit.setPositionByTile(target);
 
+		// decrement mana 
 		if (gameState.isPlayerTurn()) {
 			unit.setPlayer(1);
 			gameState.addPlayerUnit(unit);
@@ -83,6 +88,7 @@ public class Card {
 			BasicCommands.setPlayer2Mana(out, gameState.getAi());
 		}
 
+		// set unit's attack and health
 		unit.setAttack(bigCard.getAttack());
 		unit.setHealth(bigCard.getHealth());
 
@@ -110,6 +116,7 @@ public class Card {
 		
 	}
 
+	// hashmap to find the approriate config files
 	private static final Map<String, String> mapping = new HashMap<>();
     static {
         mapping.put("Comodo Charger", StaticConfFiles.u_comodo_charger);

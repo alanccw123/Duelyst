@@ -28,6 +28,8 @@ public class CardClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 		int handPosition = message.get("position").asInt();
+
+		// get the selected card
 		Card selected = gameState.getPlayerCard(handPosition);
 		
 		// do nothing if it is not player's turn
@@ -43,13 +45,17 @@ public class CardClicked implements EventProcessor{
 		//player selects a new card
 		if (gameState.cardLastClicked == null) {
 
-			List<Tile> tagets = selected.checkTargets(gameState, 1);
-
+			// check if the player has enough mana
 			if (selected.getManacost() > gameState.getHumanMana()) {
 				return;
 			}
 
+			// get the list of target tiles for using the card
+			List<Tile> tagets = selected.checkTargets(gameState, 1);
+
+			// highlight the target tiles
 			for (Tile tile : tagets) {
+				// highlight enemy units in red
 				if (tile.isHasUnit() && tile.getUnit().getPlayer() == 2) {
 					BasicCommands.drawTile(out, tile, 2);
 					try {
@@ -57,6 +63,7 @@ public class CardClicked implements EventProcessor{
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+				// highlight empty tiles and friendly units in white
 				}else{
 					BasicCommands.drawTile(out, tile, 1);
 					try {
@@ -65,7 +72,9 @@ public class CardClicked implements EventProcessor{
 						e.printStackTrace();
 					}
 				}
+				// highligh selected card
 				BasicCommands.drawCard(out, selected, handPosition, 1);
+				// update card clicked
 				gameState.highlightedForCard.add(tile);
 				gameState.cardLastClicked = selected;
 			}
