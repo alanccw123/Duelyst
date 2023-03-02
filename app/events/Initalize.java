@@ -110,9 +110,9 @@ public class Initalize implements EventProcessor{
 		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		// BasicCommands.setUnitHealth(out, avatar3, avatar3.getHealth());
 		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		// //this avatar is for testing
+		//this avatar is for testing
 		
-		// // this avatar is for testing
+		// this avatar is for testing
 		// Unit avatar4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
 		// Tile initial4 = gameBoard.getTile(3,4);
 		// avatar4.setPositionByTile(initial4);
@@ -128,7 +128,7 @@ public class Initalize implements EventProcessor{
 		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		// BasicCommands.setUnitHealth(out, avatar4, avatar4.getHealth());
 		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		//this avatar is for testing
+		// this avatar is for testing
 		
 		
 		// setPlayer1Health&mana

@@ -1,6 +1,7 @@
 package structures.basic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +92,12 @@ public class Card {
 		// set unit's attack and health
 		unit.setAttack(bigCard.getAttack());
 		unit.setHealth(bigCard.getHealth());
+
+		// card id matching with provoke units
+		Integer[] arr = new Integer[]{3, 6, 10, 16, 20, 30};
+		if (Arrays.stream(arr).anyMatch(x -> x == id)) {
+			unit.setprovoke(true); // set the unit to provoke
+		}
 
 		// render the unit on the frontend
 		EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);

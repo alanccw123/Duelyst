@@ -111,13 +111,24 @@ public class Unit {
         return isProvoke;
     }
 
+	public void setprovoke(boolean provoke) {
+		isProvoke = provoke;
+	}
+
     public boolean isRanged() {
         return isRanged;
     }
 
+	public void setRanged(boolean ranged) {
+		isRanged = ranged;
+	}
     public boolean isIsflying() {
         return isflying;
     }
+
+	public void setFlying(boolean flying) {
+		isflying = flying;
+	}
 
     public Unit() {}
 	

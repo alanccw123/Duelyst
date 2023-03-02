@@ -64,16 +64,17 @@ public class TileClicked implements EventProcessor{
 				Unit selected = clicked.getUnit();
 
 				// cannot operate on AI's units
-				if (selected.getPlayer() != 1) {
-					return;
-				}
+				// if (selected.getPlayer() != 1) {
+				// 	return;
+				// }
 
 
 				// check if the unit has movement action left
 				if (selected.canMove()) {
 					// generate lists of tiles for movement & attack
-					List<Tile> range = MovementChecker.checkMovement(clicked, board);
-					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer());
+					List<Tile> range = MovementChecker.checkMovement(clicked, board); // tiles that the unit can move to
+					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer()); // tiles (with enemy unit) that can be attacked from tiles within movement range
+					attackable.addAll(AttackChecker.checkAttackRange(clicked, board, selected.getPlayer()));// plus those that can be attacked from the unit current location
 
 					// highlight the tiles for movement in white
 					for (Tile tile : range) {
