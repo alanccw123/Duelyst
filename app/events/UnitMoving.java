@@ -24,6 +24,8 @@ public class UnitMoving implements EventProcessor{
 		
 		int unitid = message.get("id").asInt();
 		
+		gameState.setready(false);
+		
 	}
 
 }

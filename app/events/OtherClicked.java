@@ -20,7 +20,8 @@ public class OtherClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		gameState.setHumanHealth(gameState.getHumanHealth()-1);
+		// what does this do?
+		// gameState.setHumanHealth(gameState.getHumanHealth()-1);
 		
 	}
 
