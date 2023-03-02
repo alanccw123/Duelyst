@@ -460,7 +460,6 @@ public class GameState {
 	// helper method for dealing damage to an unit 
 	// returns a boolean indicating whether the unit survives the damage
 	public boolean unitTakeDamage(Unit unit, ActorRef out, int damage) {
-		unit.setHealth(unit.getHealth() - damage);
 		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
 		try {
 			Thread.sleep(1000);
@@ -468,6 +467,7 @@ public class GameState {
 			e.printStackTrace();
 		}
 		
+		unit.setHealth(unit.getHealth() - damage);
 		if (unit.getHealth() <= 0) {
 			// the unit is dead
 			BasicCommands.setUnitHealth(out, unit, 0);
