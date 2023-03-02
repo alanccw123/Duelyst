@@ -282,18 +282,18 @@ public class TileClicked implements EventProcessor{
 					gameState.clearhighlight(out);
 					gameState.cardLastClicked = null;
 				}
-			}
-		}else if (gameState.highlightedForCard.contains(clicked)) {
-			gameState.clearhighlight(out);
-			// remove card from hand
-			int index = gameState.getCardPosition(gameState.cardLastClicked);
-			gameState.removePlayerCard(index);
-			gameState.displayHand(out);
+			}else if (gameState.highlightedForCard.contains(clicked)) {
+				gameState.clearhighlight(out);
+				// remove card from hand
+				int index = gameState.getCardPosition(gameState.cardLastClicked);
+				gameState.removePlayerCard(index);
+				gameState.displayHand(out);
 			
-			// execute the card's effects
-			gameState.cardLastClicked.playCard(out, gameState, clicked);
-
-			gameState.cardLastClicked = null;
+				// execute the card's effects
+				gameState.cardLastClicked.playCard(out, gameState, clicked);
+				
+				gameState.cardLastClicked = null;
+			}
 		}
 		
 		// else the user last selected an unit, this means the current clicked tile is a target for action
