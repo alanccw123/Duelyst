@@ -443,8 +443,10 @@ public class GameState {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		if (unitTakeDamage(defender, out, attacker.getAttack()) && defender.canAttack()) {
-			//defender counter-attack if not dead
+
+		//defender counter-attack if not dead, haven't countered this turn and within range
+		if (unitTakeDamage(defender, out, attacker.getAttack()) && defender.canAttack() && AttackChecker.checkAttackRange(defender.getTile(), gameBoard, defender.getPlayer()).contains(current)) {
+			
 			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
 			try {
 				Thread.sleep(1000);

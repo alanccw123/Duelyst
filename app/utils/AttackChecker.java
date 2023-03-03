@@ -6,6 +6,7 @@ import java.util.List;
 
 import structures.Board;
 import structures.basic.Tile;
+import structures.basic.Unit;
 
 public class AttackChecker {
 	
@@ -13,11 +14,12 @@ public class AttackChecker {
 	// check for viable targets for attacks within one Tile range
 	public static List<Tile> checkAttackRange(Tile current, Board board, int player) {
 		List<Tile> targets = new ArrayList<>();
-		
+
 		int x = current.getTilex();
 		int y = current.getTiley();
+
 		
-		// add all tiles occupied by enemy units to the list
+		// add all tiles occupied by enemy units within normal attack range to the list
 		for (int i = x - 1; i <= x + 1; i++) {
 			for (int j = y - 1; j <= y + 1; j++) {
 
@@ -44,6 +46,10 @@ public class AttackChecker {
 		
 		// if there is no provoke unit, return all tiles
 		if (provoke.isEmpty()) {
+			// return ranged targets for ranged unit
+			if (current.isHasUnit() && current.getUnit().isRanged()) {
+				return rangedAttack(current, board, player);
+			}
 			return targets;
 		}else {
 		// else only return the tiles with provoke unit
@@ -61,5 +67,21 @@ public class AttackChecker {
 		}
 		
 		return targets;
+	}
+
+	// check for targets on the entire board for ranged units
+	public static List<Tile> rangedAttack(Tile current, Board board, int player) {
+		List<Tile> rangedTargets = new ArrayList<>();
+
+		for (int i = 0; i < 9; i++) {
+			for (int j = 0; j < 5; j++) {
+				Tile tile = board.getTile(i, j);
+				if (tile.isHasUnit() && tile.getUnit().getPlayer() != player) {
+					rangedTargets.add(tile);
+				}
+			}
+		}
+
+		return rangedTargets;
 	}
 }

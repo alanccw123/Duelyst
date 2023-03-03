@@ -94,9 +94,25 @@ public class Card {
 		unit.setHealth(bigCard.getHealth());
 
 		// card id matching with provoke units
-		Integer[] arr = new Integer[]{3, 6, 10, 16, 20, 30};
-		if (Arrays.stream(arr).anyMatch(x -> x == id)) {
+		Integer[] provokeUnits = new Integer[]{3, 6, 10, 16, 20, 30};
+		if (Arrays.stream(provokeUnits).anyMatch(x -> x == id)) {
 			unit.setprovoke(true); // set the unit to provoke
+		}
+
+
+		Integer[] rangedUnits = new Integer[]{2, 11, 25, 35};
+		if (Arrays.stream(rangedUnits).anyMatch(x -> x == id)) {
+			unit.setRanged(true); // set the unit to provoke
+		}
+
+		Integer[] doubleAttackUnits = new Integer[]{7, 17, 26, 36};
+		if (Arrays.stream(doubleAttackUnits).anyMatch(x -> x == id)) {
+			unit.setMaxAttackAction(2); // set the unit to provoke
+		}
+		
+		Integer[] flyingUnits = new Integer[]{24, 34};
+		if (Arrays.stream(flyingUnits).anyMatch(x -> x == id)) {
+			unit.setFlying(true); // set the unit to provoke
 		}
 
 		// render the unit on the frontend

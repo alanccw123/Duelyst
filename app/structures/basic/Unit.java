@@ -78,6 +78,10 @@ public class Unit {
 	@JsonIgnore
 	private int availableMoveAction = 0;
 
+	public void setMaxAttackAction(int i) {
+		maxAttackAction = i;
+	}
+
 	public boolean canMove() {
 		return availableMoveAction > 0;
 	}
