@@ -71,7 +71,13 @@ public class Card {
 	// execute the effect of the card
 	// base version is for summoning units, overridden in child classes to implement spell cards
 	public void playCard(ActorRef out, GameState gameState, Tile target) {
-		
+		BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", id), 1);
+
+		// if it is a spell card do nothing
+		if (mapping.get(cardname) == null) {
+			return;
+		}
+
 		// create the corresponding unit
 		Unit unit = BasicObjectBuilders.loadUnit(mapping.get(cardname), id, Unit.class);
 		unit.setPositionByTile(target);
@@ -137,6 +143,7 @@ public class Card {
 			e.printStackTrace();
 		}
 		
+		BasicCommands.addPlayer1Notification(out, String.format("Summon unit id: %d", id), 1);
 	}
 
 	// hashmap to find the approriate config files

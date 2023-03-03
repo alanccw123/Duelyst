@@ -126,7 +126,7 @@ public class Unit {
 	public void setRanged(boolean ranged) {
 		isRanged = ranged;
 	}
-    public boolean isIsflying() {
+    public boolean isflying() {
         return isflying;
     }
 

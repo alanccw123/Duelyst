@@ -216,8 +216,16 @@ public class GameState {
 		AIHand.remove(index - 1);
 	}
 
+	public void removeAICard(Card card) {
+		AIHand.remove(card);
+	}
+
 	public Card getPlayerCard(int index) {
 		return playerHand.get(index - 1);
+	}
+
+	public List<Card> getAIHand() {
+		return AIHand;
 	}
 
 	// public void summonPlayerUnit(Unit unit, Tile tile, ActorRef out) {
@@ -445,7 +453,7 @@ public class GameState {
 		}
 
 		//defender counter-attack if not dead, haven't countered this turn and within range
-		if (unitTakeDamage(defender, out, attacker.getAttack()) && defender.canAttack() && AttackChecker.checkAttackRange(defender.getTile(), gameBoard, defender.getPlayer()).contains(current)) {
+		if (unitTakeDamage(defender, out, attacker.getAttack()) && defender.canAttack() && AttackChecker.checkAttackRange(defender.getTile(), gameBoard, defender.getPlayer()).contains(attacker.getTile())) {
 			
 			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
 			try {
