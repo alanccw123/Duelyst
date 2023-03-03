@@ -21,7 +21,7 @@ public class EndTurnClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-
+		gameState.clearhighlight(out);
 		// if it is player's turn, switch to AI's turn
 	    if (gameState.isPlayerTurn()) {
 	        // Player defaultMana = new Player(20, 0);

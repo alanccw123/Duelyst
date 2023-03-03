@@ -143,7 +143,40 @@ public class TileClicked implements EventProcessor{
 		// else if the player last selected a card
 		}else if (gameState.cardLastClicked != null) {
 			// play the card if the tile clicked is valid
-			if(gameState.cardLastClicked.getCardname().equals("Sundrop Elixir")) {
+			if (gameState.cardLastClicked.getCardname().equals("Truestrike")) {
+                if (clicked.isHasUnit()) {
+                    Unit selected = clicked.getUnit();
+                    for (Unit u : gameState.getAIUnits()) {
+                        if (u.getId() == (selected.getId())) {
+                            gameState.clearhighlight(out);
+                            int index = gameState.getCardPosition(gameState.cardLastClicked);
+                            gameState.removePlayerCard(index);
+                            gameState.displayHand(out);
+                            if (selected.getHealth() > 2) {
+                                selected.setHealth(selected.getHealth() - 2);
+                                EffectAnimation inmolation = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_inmolation);
+                                BasicCommands.playEffectAnimation(out, inmolation, clicked);
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                BasicCommands.setUnitHealth(out, selected, selected.getHealth());
+                            } else {
+                                selected.setHealth(0);
+                                gameState.unitTakeDamage(selected, out, 0);
+                            }
+                            if (selected.getId() == 100) {
+                                gameState.setAiHealth(selected.getHealth());
+                                BasicCommands.setPlayer2Health(out, gameState.getAi());
+                            }
+                            gameState.getPlayer().setMana(gameState.getPlayer().getMana() - gameState.cardLastClicked.getManacost());
+                            BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
+                            gameState.cardLastClicked = null;
+                        }
+                    }
+                }      		
+			}else if(gameState.cardLastClicked.getCardname().equals("Sundrop Elixir")) {
 				if(clicked.isHasUnit()) {
 					gameState.clearhighlight(out);
 					// remove card from hand
@@ -193,9 +226,6 @@ public class TileClicked implements EventProcessor{
 			            e.printStackTrace();
 			        }
 			        gameState.cardLastClicked = null;
-				}else{
-					gameState.clearhighlight(out);
-					gameState.cardLastClicked = null;
 				}
 			}else if(gameState.cardLastClicked.getCardname().equals("Staff of Y'Kir'")) {//假设这张牌在玩家手里
 				if(clicked.isHasUnit()) {
@@ -235,13 +265,7 @@ public class TileClicked implements EventProcessor{
 						}
 						gameState.removeAICard(index);
 						gameState.cardLastClicked = null;
-					}else {
-						gameState.clearhighlight(out);
-						gameState.cardLastClicked = null;
 					}
-				}else{
-					gameState.clearhighlight(out);
-					gameState.cardLastClicked = null;
 				}
 			}else if(gameState.cardLastClicked.getCardname().equals("Entropic Decay")) {
 				if(clicked.isHasUnit()) {
@@ -274,13 +298,7 @@ public class TileClicked implements EventProcessor{
 						}
 						gameState.removeAICard(index);
 						gameState.cardLastClicked = null;
-					}else {
-						gameState.clearhighlight(out);
-						gameState.cardLastClicked = null;
 					}
-				}else{
-					gameState.clearhighlight(out);
-					gameState.cardLastClicked = null;
 				}
 			}else if (gameState.highlightedForCard.contains(clicked)) {
 				gameState.clearhighlight(out);
@@ -295,9 +313,9 @@ public class TileClicked implements EventProcessor{
 				gameState.cardLastClicked = null;
 			}
 		}
-		
+
 		// else the user last selected an unit, this means the current clicked tile is a target for action
-		else {
+			else {
 			
 			// user clicks on a target for movement
 			if (gameState.highlightedForMovement.contains(clicked)) {
