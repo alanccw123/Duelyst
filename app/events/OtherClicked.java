@@ -1,5 +1,5 @@
 package events;
-
+import structures.GameState;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
@@ -20,7 +20,8 @@ public class OtherClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		
+		// what does this do?
+		// gameState.setHumanHealth(gameState.getHumanHealth()-1);
 		
 	}
 
