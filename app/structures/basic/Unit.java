@@ -77,6 +77,8 @@ public class Unit {
 	private int maxMoveAction = 1;
 	@JsonIgnore
 	private int availableMoveAction = 0;
+	@JsonIgnore
+	private boolean canCounterAttack;
 
 	public void setMaxAttackAction(int i) {
 		maxAttackAction = i;
@@ -90,9 +92,18 @@ public class Unit {
 		return availableAttackAction > 0;
 	}
 
+	public boolean canCounterAttack() {
+		return canCounterAttack;
+	}
+
+	public void counterAttack() {
+		canCounterAttack = false;
+	}
+
 	public void resetAction() {
 		availableAttackAction = maxAttackAction;
 		availableMoveAction = maxMoveAction;
+		canCounterAttack = true;
 	}
 
 	public void spendAttackAction() {

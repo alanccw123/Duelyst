@@ -162,6 +162,7 @@ public class GameState {
 	public boolean playerDrawCard() {
 		if (playerDeck.isEmpty()) {
 			// run of cards, player lose
+			
 		}
 		Card card = playerDeck.remove(0);
 		if (playerHand.size() < 6) {
@@ -210,6 +211,10 @@ public class GameState {
 
 	public void removePlayerCard(int index) {
 		playerHand.remove(index - 1);
+	}
+
+	public void removePlayerCard(Card card) {
+		playerHand.remove(card);
 	}
 
 	public void removeAICard(int index) {
@@ -318,12 +323,34 @@ public class GameState {
 	//attribute to keep track of whether moving animation is playing
 	private boolean ready = true;
 
+	private boolean onGoingAttack = false;
+	private Unit defender;
+	private Unit attacker;
+
+	public boolean onGoingAttack() {
+		return onGoingAttack;
+	}
+
+	public Unit getAttackTarget() {
+		return defender;
+	}
+
+	public Unit getAttacker() {
+		return attacker;
+	}
+
+	public void resetOngoingAttack() {
+		onGoingAttack=false;
+		defender=null;
+		attacker=null;
+	}
+
 	// not used
-	private int unitID = 0;
+	// private int unitID = 0;
 	
-	public int getUnitID() {
-        return unitID++;
-    }
+	// public int getUnitID() {
+    //     return unitID++;
+    // }
 
 	public Board getGameBoard() {
 		return gameBoard;
@@ -380,11 +407,11 @@ public class GameState {
 		}
 		
 		BasicCommands.moveUnitToTile(out, unit, target, yFirst);
-		try {
-			Thread.sleep(2500);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		// try {
+		// 	Thread.sleep(2500);
+		// } catch (InterruptedException e) {
+		// 	e.printStackTrace();
+		// }
 
 		//update unit's new position
 		current.removeUnit();
@@ -395,8 +422,7 @@ public class GameState {
 	// perform an attack
 	// takes the attcker and defender units as input
 	public void attack(Unit attacker, Unit defender, ActorRef out) {
-		//spend attacker's action
-		attacker.spendAttackAction();
+		
 		
 		// Tile current = gameBoard.searchFor(attacker);
 		// Tile target = gameBoard.searchFor(defender);
@@ -438,31 +464,43 @@ public class GameState {
 				}
 				
 			}
-			// moving the unit into attack position
+			// moving the unit into attack position first
 			moveUnit(attacker, destination, out);
-		}
-		
-		
-		
-		// attacker attack
-		BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 
-		//defender counter-attack if not dead, haven't countered this turn and within range
-		if (unitTakeDamage(defender, out, attacker.getAttack()) && defender.canAttack() && AttackChecker.checkAttackRange(defender.getTile(), gameBoard, defender.getPlayer()).contains(attacker.getTile())) {
-			
-			BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
+			// keep track of the on-going unfinished attack
+			onGoingAttack = true;
+			this.defender = defender;
+			this.attacker = attacker;
+
+		// else if the target is now in range
+		}else {
+			// attacker attack
+			//spend attacker's action
+			attacker.spendAttackAction();
+			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			unitTakeDamage(attacker, out, defender.getAttack());
-			defender.spendAttackAction();
+
+			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
+
+			//defender counter-attack if not dead, haven't countered this turn and within range
+			if (unitTakeDamage(defender, out, attacker.getAttack()) && defender.canCounterAttack() && AttackChecker.checkCounterAttack(target, gameBoard).contains(attacker.getTile())) {
+				
+				BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				unitTakeDamage(attacker, out, defender.getAttack());
+				defender.counterAttack();
+
+				BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.idle);				
+			}
+			
 		}	
 				
 	}
@@ -495,6 +533,7 @@ public class GameState {
 		}else {
 			// the unit survives
 			BasicCommands.setUnitHealth(out, unit, unit.getHealth());
+			BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.idle);
 			return true;
 		}
 		

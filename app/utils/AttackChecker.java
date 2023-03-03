@@ -11,7 +11,7 @@ import structures.basic.Unit;
 public class AttackChecker {
 	
 	
-	// check for viable targets for attacks within one Tile range
+	// check for viable targets for attacks for an unit
 	public static List<Tile> checkAttackRange(Tile current, Board board, int player) {
 		List<Tile> targets = new ArrayList<>();
 
@@ -83,5 +83,23 @@ public class AttackChecker {
 		}
 
 		return rangedTargets;
+	}
+
+	// check for counter-attack range, disregarding provoke effects
+	public static List<Tile> checkCounterAttack(Tile current, Board board) {
+		List<Tile> range = new ArrayList<>();
+		int x = current.getTilex();
+		int y = current.getTiley();
+
+		for (int i = x - 1; i <= x + 1; i++) {
+			for (int j = y - 1; j <= y + 1; j++) {
+
+				if (MovementChecker.withinBoard(i, j)) {
+					range.add(board.getTile(i,j));
+				}
+			}
+		}
+
+		return range;
 	}
 }

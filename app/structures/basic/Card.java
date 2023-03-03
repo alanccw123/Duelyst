@@ -41,12 +41,14 @@ public class Card {
 		List<Tile> targets = new ArrayList<>();
 		Board board = gameState.getGameBoard();
 
+		// get list of units based on whose turn it is
 		if (player == 1) {
 			friendlyunits = gameState.getPlayerUnits();
 		}else if (player == 2) {
 			friendlyunits = gameState.getAIUnits();
 		}
 
+		// check adjacent tiles of all friendy units for unoccupied tiles
 		for (Unit unit : friendlyunits) {
 			Tile friendly = unit.getTile();
 			int x = friendly.getTilex();
@@ -105,20 +107,22 @@ public class Card {
 			unit.setprovoke(true); // set the unit to provoke
 		}
 
-
+		// card id matching with ranged units
 		Integer[] rangedUnits = new Integer[]{2, 11, 25, 35};
 		if (Arrays.stream(rangedUnits).anyMatch(x -> x == id)) {
-			unit.setRanged(true); // set the unit to provoke
+			unit.setRanged(true); // set the unit to ranged
 		}
 
+		// card id matching with double attack
 		Integer[] doubleAttackUnits = new Integer[]{7, 17, 26, 36};
 		if (Arrays.stream(doubleAttackUnits).anyMatch(x -> x == id)) {
-			unit.setMaxAttackAction(2); // set the unit to provoke
+			unit.setMaxAttackAction(2); // set the unit's max attack action to 2
 		}
 		
+		// card id matching with flying units
 		Integer[] flyingUnits = new Integer[]{24, 34};
 		if (Arrays.stream(flyingUnits).anyMatch(x -> x == id)) {
-			unit.setFlying(true); // set the unit to provoke
+			unit.setFlying(true); // set the unit to flying
 		}
 
 		// render the unit on the frontend
