@@ -87,7 +87,7 @@ public class EndTurnClicked implements EventProcessor{
 			
 			Card found = null;
 			for (Card card : gameState.getAIHand()) {
-				if (card.getId() == 24) {
+				if (card.getId() == 24 || card.getId() == 23) {
 					found = card;
 				}
 			}

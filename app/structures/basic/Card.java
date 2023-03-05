@@ -99,8 +99,9 @@ public class Card {
 
 		// set unit's attack and health
 		unit.setAttack(bigCard.getAttack());
-		unit.setHealth(bigCard.getHealth());
 		unit.setMaxHealth(bigCard.getHealth());
+		unit.setHealth(bigCard.getHealth());
+		
 
 		// card id matching with provoke units
 		Integer[] provokeUnits = new Integer[]{3, 6, 10, 16, 20, 30};
@@ -138,7 +139,8 @@ public class Card {
 			for (Unit friendly : gameState.getPlayerUnits()) {
 				// increment avatar's HP by 3
 				if (friendly.getId() == 99) {
-					friendly.setHealth(unit.getHealth() + 3);
+					friendly.setHealth(friendly.getHealth() + 3);
+					BasicCommands.setUnitHealth(out, friendly, friendly.getHealth());
 				}
 			}
 		}

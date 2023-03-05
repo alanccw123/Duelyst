@@ -60,6 +60,7 @@ public class Initalize implements EventProcessor{
 		avatar1.setPositionByTile(initial1);
 		avatar1.setPlayer(1);
 		avatar1.setAttack(2);
+		avatar1.setMaxHealth(20);
 		avatar1.setHealth(20);
 		avatar1.resetAction();
 		gameState.addPlayerUnit(avatar1);
@@ -80,6 +81,7 @@ public class Initalize implements EventProcessor{
 		avatar2.setPositionByTile(initial2);
 		avatar2.setPlayer(2);
 		avatar2.setAttack(2);
+		avatar2.setMaxHealth(20);
 		avatar2.setHealth(20);
 		avatar2.resetAction();
 		gameState.addAIUnit(avatar2);

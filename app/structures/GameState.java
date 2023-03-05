@@ -521,10 +521,11 @@ public class GameState {
 				// increment attack of silverguard knight
 				if (friendly.getId() == 3 || friendly.getId() == 10) {
 					friendly.setAttack(friendly.getAttack() + 2);
+					BasicCommands.setUnitAttack(out, friendly, friendly.getAttack());
 				}
 			}
 		}
-		
+
 		unit.setHealth(unit.getHealth() - damage);
 		if (unit.getHealth() <= 0) {
 			// the unit is dead
