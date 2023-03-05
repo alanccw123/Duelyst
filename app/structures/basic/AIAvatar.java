@@ -14,7 +14,7 @@ public class AIAvatar extends Unit{
     @Override
     public void setHealth(int health) {
         super.setHealth(health);
-        owner.setHealth(health);
+        owner.setHealth(getHealth());
         BasicCommands.setPlayer2Health(out, owner);
     }
 

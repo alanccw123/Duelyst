@@ -515,6 +515,16 @@ public class GameState {
 			e.printStackTrace();
 		}
 		
+		// if the damaged unit is avatar
+		if (unit.getId() == 99) {
+			for (Unit friendly : playerUnits) {
+				// increment attack of silverguard knight
+				if (friendly.getId() == 3 || friendly.getId() == 10) {
+					friendly.setAttack(friendly.getAttack() + 2);
+				}
+			}
+		}
+		
 		unit.setHealth(unit.getHealth() - damage);
 		if (unit.getHealth() <= 0) {
 			// the unit is dead
@@ -524,6 +534,11 @@ public class GameState {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}
+			// if the dying unit is windstrike
+			if (unit.getId() == 24 || unit.getId() == 34) {
+				// AI draws a card
+				AIDrawCard();
 			}
 			BasicCommands.deleteUnit(out, unit);
 			gameBoard.searchFor(unit).removeUnit();

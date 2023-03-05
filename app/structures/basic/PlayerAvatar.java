@@ -14,7 +14,7 @@ public class PlayerAvatar extends Unit{
     @Override
     public void setHealth(int health) {
         super.setHealth(health);
-        owner.setHealth(health);
+        owner.setHealth(getHealth());
         BasicCommands.setPlayer1Health(out, owner);
     }
 

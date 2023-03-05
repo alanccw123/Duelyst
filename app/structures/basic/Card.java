@@ -100,6 +100,7 @@ public class Card {
 		// set unit's attack and health
 		unit.setAttack(bigCard.getAttack());
 		unit.setHealth(bigCard.getHealth());
+		unit.setMaxHealth(bigCard.getHealth());
 
 		// card id matching with provoke units
 		Integer[] provokeUnits = new Integer[]{3, 6, 10, 16, 20, 30};
@@ -123,6 +124,23 @@ public class Card {
 		Integer[] flyingUnits = new Integer[]{24, 34};
 		if (Arrays.stream(flyingUnits).anyMatch(x -> x == id)) {
 			unit.setFlying(true); // set the unit to flying
+		}
+
+		// if summoning a blaze hound
+		if (id == 23 || id == 33) {
+			gameState.AIDrawCard();
+			gameState.playerDrawCard();
+			gameState.displayHand(out);
+		}
+
+		// if summoning a azure herald
+		if (id == 5 || id == 15) {
+			for (Unit friendly : gameState.getPlayerUnits()) {
+				// increment avatar's HP by 3
+				if (friendly.getId() == 99) {
+					friendly.setHealth(unit.getHealth() + 3);
+				}
+			}
 		}
 
 		// render the unit on the frontend

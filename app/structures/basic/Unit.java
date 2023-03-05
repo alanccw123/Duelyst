@@ -39,6 +39,8 @@ public class Unit {
 	private int attack;
 	@JsonIgnore
 	private Tile current;
+	@JsonIgnore
+	private int maxHealth;
 
 
 	public int getHealth() {
@@ -46,7 +48,15 @@ public class Unit {
 	}
 
 	public void setHealth(int health) {
-		this.health = health;
+		if (health > maxHealth) {
+			this.health = maxHealth;
+		}else {
+			this.health = health;
+		}
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
 	}
 
 	public int getAttack() {
