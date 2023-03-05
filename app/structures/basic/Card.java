@@ -129,6 +129,7 @@ public class Card {
 
 		// if summoning a blaze hound
 		if (id == 23 || id == 33) {
+			//both players draw a card
 			gameState.AIDrawCard();
 			gameState.playerDrawCard();
 			gameState.displayHand(out);

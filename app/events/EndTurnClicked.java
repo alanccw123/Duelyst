@@ -85,6 +85,7 @@ public class EndTurnClicked implements EventProcessor{
 	            e.printStackTrace();
 	        }
 			
+			// code for esting cards in AI deck
 			Card found = null;
 			for (Card card : gameState.getAIHand()) {
 				if (card.getId() == 24 || card.getId() == 23) {
@@ -98,6 +99,7 @@ public class EndTurnClicked implements EventProcessor{
 				gameState.removeAICard(found);
 				found.playCard(out, gameState, randomTile);
 			}
+			// code for testing cards in AI deck
 			
 
 	        // Player defaultMana = new Player(20, 0);

@@ -477,11 +477,19 @@ public class GameState {
 			// attacker attack
 			//spend attacker's action
 			attacker.spendAttackAction();
+
+		
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}
+			
+			//play ranged attack animation if the attacker is ranged
+			if (attacker.isRanged()) {
+				EffectAnimation projectile = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_projectiles);
+				BasicCommands.playProjectileAnimation(out, projectile, 11, current, target);
 			}
 
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
