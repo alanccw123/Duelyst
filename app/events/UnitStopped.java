@@ -7,17 +7,28 @@ import akka.actor.ActorRef;
 import structures.GameState;
 
 /**
- * Indicates that a unit instance has stopped moving. 
+ * Indicates that a unit instance has stopped moving.
  * The event reports the unique id of the unit.
- * 
- * { 
- *   messageType = “unitStopped”
- *   id = <unit id>
+ * <p>
+ * {
+ * messageType = “unitStopped”
+ * id = <unit id>
  * }
- * 
- * @author Dr. Richard McCreadie
  *
+ * @author Dr. Richard McCreadie
  */
+<<<<<<< app/events/UnitStopped.java
+public class UnitStopped implements EventProcessor {
+
+    @Override
+    public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+
+        int unitid = message.get("id").asInt();
+
+        gameState.setready(true);
+
+    }
+=======
 public class UnitStopped implements EventProcessor{
 
 	@Override
@@ -28,5 +39,6 @@ public class UnitStopped implements EventProcessor{
 		gameState.setready(true);
 		
 	}
+>>>>>>> app/events/UnitStopped.java
 
 }
