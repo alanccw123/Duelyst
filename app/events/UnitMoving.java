@@ -28,16 +28,4 @@ public class UnitMoving implements EventProcessor {
 
     }
 }
-public class UnitMoving implements EventProcessor{
 
-	@Override
-	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		
-		int unitid = message.get("id").asInt();
-		
-		gameState.setready(false);
-		
-	}
-
-
-}
