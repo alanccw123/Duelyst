@@ -44,41 +44,109 @@ public class CardClicked implements EventProcessor{
 
 		//player selects a new card
 		if (gameState.cardLastClicked == null && gameState.unitLastClicked == null) {
-
+			gameState.cardLastClicked = selected;
 			// check if the player has enough mana
 			if (selected.getManacost() > gameState.getHumanMana()) {
 				return;
 			}
-
-			// get the list of target tiles for using the card
-			List<Tile> tagets = selected.checkTargets(gameState, 1);
-
-			// highlight the target tiles
-			for (Tile tile : tagets) {
-				// highlight enemy units in red
-				if (tile.isHasUnit() && tile.getUnit().getPlayer() == 2) {
-					BasicCommands.drawTile(out, tile, 2);
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				// highlight empty tiles and friendly units in white
-				}else{
-					BasicCommands.drawTile(out, tile, 1);
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+			BasicCommands.drawCard(out, selected, handPosition, 1);
+			
+			if(gameState.cardLastClicked.getCardname().equals("Truestrike")){
+                for(Unit u: gameState.getAIUnits()){
+                    BasicCommands.drawTile(out,u.getTile(),1);
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    gameState.highlightedForCard.add(u.getTile());
+                }
+            }else if(gameState.cardLastClicked.getCardname().equals("Sundrop Elixir")) {
+				for (Unit u : gameState.getPlayerUnits()){
+					BasicCommands.drawTile(out, u.getTile(), 1);
+					try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+					gameState.highlightedForCard.add(u.getTile());
+		        }
+				for (Unit uu : gameState.getAIUnits()){
+					BasicCommands.drawTile(out, uu.getTile(), 1);
+					try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+					gameState.highlightedForCard.add(uu.getTile());
+		        }
+			}else if(gameState.cardLastClicked.getCardname().equals("Staff of Y'Kir'")) {
+				for (Unit u : gameState.getAIUnits()){
+					if(u.getId()==100) {
+						BasicCommands.drawTile(out, u.getTile(), 1);
+						try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+						gameState.highlightedForCard.add(u.getTile());
 					}
 				}
-				// highligh selected card
-				BasicCommands.drawCard(out, selected, handPosition, 1);
-				// update card clicked
-				gameState.highlightedForCard.add(tile);
-				gameState.cardLastClicked = selected;
+			}else if(gameState.cardLastClicked.getCardname().equals("Entropic Decay")) {
+				for (Unit u : gameState.getPlayerUnits()){
+					if(u.getId()!=99) {
+						BasicCommands.drawTile(out, u.getTile(), 1);
+						try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+						gameState.highlightedForCard.add(u.getTile());
+					}
+		        }
+				for (Unit uu : gameState.getAIUnits()){
+					if(uu.getId()!=100) {
+						BasicCommands.drawTile(out, uu.getTile(), 1);
+						try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+						gameState.highlightedForCard.add(uu.getTile());
+					}
+		        }
+			}else {
+				if(selected.getId()==6 || selected.getId()==16 || selected.getId()==28 || selected.getId()==38) {
+					for (int i = 0; i < gameState.getGameBoard().board.length; i++) {
+						for (int j = 0; j < gameState.getGameBoard().board[i].length; j++) {
+							if(gameState.getGameBoard().board[i][j].isHasUnit()) {	
+								BasicCommands.drawTile(out, gameState.getGameBoard().board[i][j], 0);
+								try {
+									Thread.sleep(5);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}else {
+								BasicCommands.drawTile(out, gameState.getGameBoard().board[i][j], 1);
+								try {
+									Thread.sleep(5);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								gameState.highlightedForCard.add(gameState.getGameBoard().board[i][j]);
+							}
+						}
+					}
+				}else {
+			// get the list of target tiles for using the card
+				List<Tile> tagets = selected.checkTargets(gameState, 1);
+			// highlight the target tiles
+				for (Tile tile : tagets) {
+					// highlight enemy units in red
+					if (tile.isHasUnit() && tile.getUnit().getPlayer() == 2) {
+						BasicCommands.drawTile(out, tile, 2);
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					// highlight empty tiles and friendly units in white
+					}else{
+						BasicCommands.drawTile(out, tile, 1);
+						try {
+							Thread.sleep(5);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					// highlight selected card
+					BasicCommands.drawCard(out, selected, handPosition, 1);
+					// update card clicked
+					gameState.highlightedForCard.add(tile);
+					gameState.cardLastClicked = selected;
+				}
+				}
 			}
-
 		// the player clicks on a selected card to de-select
 		}else if (selected == gameState.cardLastClicked) {
 			BasicCommands.drawCard(out, selected, handPosition, 0);
