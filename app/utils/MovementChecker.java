@@ -18,6 +18,28 @@ public class MovementChecker {
 		int x = tile.getTilex();
 		int y = tile.getTiley();
 		int player = tile.getUnit().getPlayer();
+
+		// first, check whether there is enemy provoke unit adjacent
+		for (Tile check : AttackChecker.checkAttackRange(tile, board, player)) {
+			// if so, then this unit cannot move and therefore an empty list is returned
+			if (check.getUnit().isProvoke()) {
+				return range;
+			}
+		} 
+
+		// if the unit is flying
+		if (tile.getUnit().isflying()) {
+			// return a list of all unoccupied tiles on board
+			for (int i = 0; i < 9; i++) {
+				for (int j = 0; j < 5; j++) {
+					if (!board.getTile(i, j).isHasUnit()) {
+						range.add(board.getTile(i, j));
+					}
+				}
+			}
+
+			return range;
+		}
 		
 		// check horizontal and vertical directions
 		if (isEmpty(x, y + 1, board)) {
