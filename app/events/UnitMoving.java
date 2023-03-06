@@ -16,6 +16,7 @@ import structures.GameState;
  *
  * @author Dr. Richard McCreadie
  */
+<<<<<<< app/events/UnitMoving.java
 public class UnitMoving implements EventProcessor {
 
     @Override
@@ -26,5 +27,17 @@ public class UnitMoving implements EventProcessor {
         gameState.setready(false);
 
     }
+=======
+public class UnitMoving implements EventProcessor{
+
+	@Override
+	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
+		
+		int unitid = message.get("id").asInt();
+		
+		gameState.setready(false);
+		
+	}
+>>>>>>> app/events/UnitMoving.java
 
 }

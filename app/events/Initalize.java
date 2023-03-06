@@ -32,6 +32,10 @@ public class Initalize implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 
+<<<<<<< app/events/Initalize.java
+=======
+
+>>>>>>> app/events/Initalize.java
 		gameState.changeTurn();
 		// gameState.something = true;
 		gameState.initalize();
@@ -39,6 +43,11 @@ public class Initalize implements EventProcessor{
 		// BasicCommands.setPlayer2Health(out, gameState.ai);
 		// BasicCommands.setPlayer1Mana(out, gameState.player);
 		// BasicCommands.setPlayer2Mana(out, gameState.ai);
+<<<<<<< app/events/Initalize.java
+=======
+
+
+>>>>>>> app/events/Initalize.java
 		
 		gameState.gameInitalised = true;
 		
@@ -50,7 +59,10 @@ public class Initalize implements EventProcessor{
 		// place player's avatar
 		Unit avatar1 = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 99, Unit.class);
 		Tile initial1 = gameBoard.getTile(1,2);
+<<<<<<< app/events/Initalize.java
 		assert avatar1 != null;
+=======
+>>>>>>> app/events/Initalize.java
 		avatar1.setPositionByTile(initial1);
 		avatar1.setPlayer(1);
 		avatar1.setAttack(2);
@@ -68,7 +80,10 @@ public class Initalize implements EventProcessor{
 		// place AI's avatar
 		Unit avatar2 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 100, Unit.class);
 		Tile initial2 = gameBoard.getTile(7,2);
+<<<<<<< app/events/Initalize.java
 		assert avatar2 != null;
+=======
+>>>>>>> app/events/Initalize.java
 		avatar2.setPositionByTile(initial2);
 		avatar2.setPlayer(2);
 		avatar2.setAttack(2);
@@ -82,7 +97,13 @@ public class Initalize implements EventProcessor{
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setUnitHealth(out, avatar2, avatar2.getHealth());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
+<<<<<<< app/events/Initalize.java
 
+=======
+		
+		
+		
+>>>>>>> app/events/Initalize.java
 		
 		// this avatar is for testing
 		// Unit avatar3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
