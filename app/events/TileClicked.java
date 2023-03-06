@@ -149,7 +149,8 @@ public class TileClicked implements EventProcessor{
                     Unit selected = clicked.getUnit();
                     for (Unit u : gameState.getAIUnits()) {
                         if (u.getId() == (selected.getId())) {
-                            gameState.clearhighlight(out);
+                            BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", gameState.cardLastClicked.getId()), 1);
+							gameState.clearhighlight(out);
                             int index = gameState.getCardPosition(gameState.cardLastClicked);
                             gameState.removePlayerCard(index);
                             gameState.displayHand(out);
@@ -184,7 +185,7 @@ public class TileClicked implements EventProcessor{
 					int index = gameState.getCardPosition(gameState.cardLastClicked);
 					gameState.removePlayerCard(index);
 					gameState.displayHand(out);
-					
+					BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", gameState.cardLastClicked.getId()), 1);
 					Unit selected = clicked.getUnit();
 					selected.setHealth(selected.getHealth() + 5);
 					int currentHealth = selected.getHealth();
