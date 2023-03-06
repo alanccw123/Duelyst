@@ -27,7 +27,7 @@ public class UnitMoving implements EventProcessor {
         gameState.setready(false);
 
     }
-
+}
 public class UnitMoving implements EventProcessor{
 
 	@Override
