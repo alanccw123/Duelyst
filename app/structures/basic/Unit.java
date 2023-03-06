@@ -39,6 +39,8 @@ public class Unit {
 	private int attack;
 	@JsonIgnore
 	private Tile current;
+	@JsonIgnore
+	private int maxHealth;
 
 
 	public int getHealth() {
@@ -46,7 +48,15 @@ public class Unit {
 	}
 
 	public void setHealth(int health) {
-		this.health = health;
+		if (health > maxHealth) {
+			this.health = maxHealth;
+		}else {
+			this.health = health;
+		}
+	}
+
+	public void setMaxHealth(int maxHealth) {
+		this.maxHealth = maxHealth;
 	}
 
 	public int getAttack() {
@@ -77,6 +87,12 @@ public class Unit {
 	private int maxMoveAction = 1;
 	@JsonIgnore
 	private int availableMoveAction = 0;
+	@JsonIgnore
+	private boolean canCounterAttack;
+
+	public void setMaxAttackAction(int i) {
+		maxAttackAction = i;
+	}
 
 	public boolean canMove() {
 		return availableMoveAction > 0;
@@ -86,9 +102,18 @@ public class Unit {
 		return availableAttackAction > 0;
 	}
 
+	public boolean canCounterAttack() {
+		return canCounterAttack;
+	}
+
+	public void counterAttack() {
+		canCounterAttack = false;
+	}
+
 	public void resetAction() {
 		availableAttackAction = maxAttackAction;
 		availableMoveAction = maxMoveAction;
+		canCounterAttack = true;
 	}
 
 	public void spendAttackAction() {
@@ -111,13 +136,24 @@ public class Unit {
         return isProvoke;
     }
 
+	public void setprovoke(boolean provoke) {
+		isProvoke = provoke;
+	}
+
     public boolean isRanged() {
         return isRanged;
     }
 
-    public boolean isIsflying() {
+	public void setRanged(boolean ranged) {
+		isRanged = ranged;
+	}
+    public boolean isflying() {
         return isflying;
     }
+
+	public void setFlying(boolean flying) {
+		isflying = flying;
+	}
 
     public Unit() {}
 	

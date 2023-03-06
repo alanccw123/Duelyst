@@ -26,6 +26,13 @@ public class UnitStopped implements EventProcessor{
 		int unitid = message.get("id").asInt();
 		
 		gameState.setready(true);
+
+		// check if there is an on-going attack waiting to be executed
+		if (gameState.onGoingAttack()) {
+			//if so, execute the attack
+			gameState.attack(gameState.getAttacker(), gameState.getAttackTarget(), out);
+			gameState.resetOngoingAttack();
+		}
 		
 	}
 

@@ -64,16 +64,17 @@ public class TileClicked implements EventProcessor{
 				Unit selected = clicked.getUnit();
 
 				// cannot operate on AI's units
-				if (selected.getPlayer() != 1) {
-					return;
-				}
+				// if (selected.getPlayer() != 1) {
+				// 	return;
+				// }
 
 
 				// check if the unit has movement action left
 				if (selected.canMove()) {
 					// generate lists of tiles for movement & attack
-					List<Tile> range = MovementChecker.checkMovement(clicked, board);
-					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer());
+					List<Tile> range = MovementChecker.checkMovement(clicked, board); // tiles that the unit can move to
+					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer()); // tiles (with enemy unit) that can be attacked from tiles within movement range
+					attackable.addAll(AttackChecker.checkAttackRange(clicked, board, selected.getPlayer()));// plus those that can be attacked from the unit current location
 
 					// highlight the tiles for movement in white
 					for (Tile tile : range) {
@@ -100,7 +101,7 @@ public class TileClicked implements EventProcessor{
 
 					// keep tracked of the unit selected
 					gameState.unitLastClicked = selected;
-					String debug = String.format("selected id%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
+					String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
 					BasicCommands.addPlayer1Notification(out, debug, 2);
 
 				// if the unit has moved but not yet attacked
@@ -108,7 +109,7 @@ public class TileClicked implements EventProcessor{
 					// only check 1 tile surrounding for target
 					List<Tile> attackable = AttackChecker.checkAttackRange(clicked, board, selected.getPlayer());
 
-					// should not select the unit if there is not valid target
+					// should not select the unit if there is no valid target
 					if (attackable.isEmpty()) {
 						return;
 					}
@@ -129,7 +130,7 @@ public class TileClicked implements EventProcessor{
 					gameState.unitLastClicked = selected;
 	
 
-					String debug = String.format("selected id%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
+					String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
 					BasicCommands.addPlayer1Notification(out, debug, 2);
 				}
 				
@@ -141,9 +142,9 @@ public class TileClicked implements EventProcessor{
 			// play the card if the tile clicked is valid
 			if (gameState.highlightedForCard.contains(clicked)) {
 				gameState.clearhighlight(out);
+
 				// remove card from hand
-				int index = gameState.getCardPosition(gameState.cardLastClicked);
-				gameState.removePlayerCard(index);
+				gameState.removePlayerCard(gameState.cardLastClicked);
 				gameState.displayHand(out);
 				
 				// execute the card's effects
