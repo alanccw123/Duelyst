@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class Tile {
 
-<<<<<<< app/structures/basic/Tile.java
+
     @JsonIgnore
     private static ObjectMapper mapper = new ObjectMapper(); // Jackson Java Object Serializer, is used to read java objects from a file
 
@@ -161,7 +161,7 @@ public class Tile {
     }
 
 
-=======
+
 	@JsonIgnore
 	private static ObjectMapper mapper = new ObjectMapper(); // Jackson Java Object Serializer, is used to read java objects from a file
 	
@@ -291,5 +291,5 @@ public class Tile {
 	
 	
 	
->>>>>>> app/structures/basic/Tile.java
+
 }
