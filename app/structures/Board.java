@@ -50,7 +50,7 @@ public class Board {
 		return null;
 	}
 
-	public Tile[][] board;
+	private Tile[][] board;
 	
 	
 }
