@@ -5,21 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
+import utils.StaticConfFiles;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
-
-import structures.Board;
-
-import structures.GameState;
 import structures.basic.EffectAnimation;
+import structures.Board;
+import utils.BasicObjectBuilders;
+import structures.GameState;
 import structures.basic.Tile;
 import structures.basic.Unit;
-import structures.basic.UnitAnimationType;
 import utils.AttackChecker;
-import utils.BasicObjectBuilders;
 import utils.MovementChecker;
-import utils.StaticConfFiles;
 import views.html.defaultpages.todo;
 
 /**
@@ -68,16 +64,17 @@ public class TileClicked implements EventProcessor{
 				Unit selected = clicked.getUnit();
 
 				// cannot operate on AI's units
-				if (selected.getPlayer() != 1) {
-					return;
-				}
+				// if (selected.getPlayer() != 1) {
+				// 	return;
+				// }
 
 
 				// check if the unit has movement action left
 				if (selected.canMove()) {
 					// generate lists of tiles for movement & attack
-					List<Tile> range = MovementChecker.checkMovement(clicked, board);
-					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer());
+					List<Tile> range = MovementChecker.checkMovement(clicked, board); // tiles that the unit can move to
+					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer()); // tiles (with enemy unit) that can be attacked from tiles within movement range
+					attackable.addAll(AttackChecker.checkAttackRange(clicked, board, selected.getPlayer()));// plus those that can be attacked from the unit current location
 
 					// highlight the tiles for movement in white
 					for (Tile tile : range) {
@@ -104,7 +101,7 @@ public class TileClicked implements EventProcessor{
 
 					// keep tracked of the unit selected
 					gameState.unitLastClicked = selected;
-					String debug = String.format("selected id%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
+					String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
 					BasicCommands.addPlayer1Notification(out, debug, 2);
 
 				// if the unit has moved but not yet attacked
@@ -112,7 +109,7 @@ public class TileClicked implements EventProcessor{
 					// only check 1 tile surrounding for target
 					List<Tile> attackable = AttackChecker.checkAttackRange(clicked, board, selected.getPlayer());
 
-					// should not select the unit if there is not valid target
+					// should not select the unit if there is no valid target
 					if (attackable.isEmpty()) {
 						return;
 					}
@@ -133,7 +130,7 @@ public class TileClicked implements EventProcessor{
 					gameState.unitLastClicked = selected;
 	
 
-					String debug = String.format("selected id%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
+					String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
 					BasicCommands.addPlayer1Notification(out, debug, 2);
 				}
 				
@@ -148,7 +145,8 @@ public class TileClicked implements EventProcessor{
                     Unit selected = clicked.getUnit();
                     for (Unit u : gameState.getAIUnits()) {
                         if (u.getId() == (selected.getId())) {
-                            gameState.clearhighlight(out);
+                        	BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", gameState.cardLastClicked.getId()), 1);
+                        	gameState.clearhighlight(out);
                             int index = gameState.getCardPosition(gameState.cardLastClicked);
                             gameState.removePlayerCard(index);
                             gameState.displayHand(out);
@@ -183,7 +181,7 @@ public class TileClicked implements EventProcessor{
 					int index = gameState.getCardPosition(gameState.cardLastClicked);
 					gameState.removePlayerCard(index);
 					gameState.displayHand(out);
-					
+					BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", gameState.cardLastClicked.getId()), 1);
 					Unit selected = clicked.getUnit();
 					selected.setHealth(selected.getHealth() + 5);
 					int currentHealth = selected.getHealth();
@@ -227,7 +225,7 @@ public class TileClicked implements EventProcessor{
 			        }
 			        gameState.cardLastClicked = null;
 				}
-			}else if(gameState.cardLastClicked.getCardname().equals("Staff of Y'Kir'")) {//假设这张牌在玩家手里
+			}else if(gameState.cardLastClicked.getCardname().equals("Staff of Y'Kir'")) {//Assuming the card is in the player's hand and testing the function
 				if(clicked.isHasUnit()) {
 					Unit selected = clicked.getUnit();
 					if(selected.getId()==100) {
@@ -267,7 +265,7 @@ public class TileClicked implements EventProcessor{
 						gameState.cardLastClicked = null;
 					}
 				}
-			}else if(gameState.cardLastClicked.getCardname().equals("Entropic Decay")) {
+			}else if(gameState.cardLastClicked.getCardname().equals("Entropic Decay")) {//Assuming the card is in the player's hand and testing the function
 				if(clicked.isHasUnit()) {
 					Unit selected = clicked.getUnit();
 					if(selected.getId()!=100 && selected.getId()!=99) {

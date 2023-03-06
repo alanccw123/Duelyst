@@ -2,8 +2,6 @@ package events;
 
 import structures.GameState;
 import structures.basic.*;
-import utils.BasicObjectBuilders;
-import utils.StaticConfFiles;
 
 import java.util.List;
 
@@ -12,7 +10,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import akka.actor.ActorRef;
 import commands.BasicCommands;
 import structures.GameState;
-import structures.Board;
 
 /**
  * Indicates that the user has clicked an object on the game canvas, in this case a card.

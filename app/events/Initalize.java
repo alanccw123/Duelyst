@@ -9,7 +9,9 @@ import demo.CheckMoveLogic;
 import demo.CommandDemo;
 import structures.Board;
 import structures.GameState;
+import structures.basic.AIAvatar;
 import structures.basic.Player;
+import structures.basic.PlayerAvatar;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import utils.BasicObjectBuilders;
@@ -51,14 +53,18 @@ public class Initalize implements EventProcessor{
 		gameBoard.initialize(out);
 		
 		// place player's avatar
-		Unit avatar1 = BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 99, Unit.class);
+		PlayerAvatar avatar1 = (PlayerAvatar) BasicObjectBuilders.loadUnit(StaticConfFiles.humanAvatar, 99, PlayerAvatar.class);
+		avatar1.setOwner(gameState.getPlayer());
+		avatar1.setActorRef(out);
 		Tile initial1 = gameBoard.getTile(1,2);
 		avatar1.setPositionByTile(initial1);
 		avatar1.setPlayer(1);
 		avatar1.setAttack(2);
+		avatar1.setMaxHealth(20);
 		avatar1.setHealth(20);
 		avatar1.resetAction();
 		gameState.addPlayerUnit(avatar1);
+		
 		
 		BasicCommands.drawUnit(out, avatar1, initial1);
 		try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
@@ -68,11 +74,14 @@ public class Initalize implements EventProcessor{
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		
 		// place AI's avatar
-		Unit avatar2 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 100, Unit.class);
+		AIAvatar avatar2 = (AIAvatar) BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, 100, AIAvatar.class);
+		avatar2.setOwner(gameState.getAi());
+		avatar2.setActorRef(out);
 		Tile initial2 = gameBoard.getTile(7,2);
 		avatar2.setPositionByTile(initial2);
 		avatar2.setPlayer(2);
 		avatar2.setAttack(2);
+		avatar2.setMaxHealth(20);
 		avatar2.setHealth(20);
 		avatar2.resetAction();
 		gameState.addAIUnit(avatar2);
@@ -103,9 +112,9 @@ public class Initalize implements EventProcessor{
 		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		// BasicCommands.setUnitHealth(out, avatar3, avatar3.getHealth());
 		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		// //this avatar is for testing
+		//this avatar is for testing
 		
-		// // this avatar is for testing
+		// this avatar is for testing
 		// Unit avatar4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
 		// Tile initial4 = gameBoard.getTile(3,4);
 		// avatar4.setPositionByTile(initial4);
@@ -121,7 +130,7 @@ public class Initalize implements EventProcessor{
 		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		// BasicCommands.setUnitHealth(out, avatar4, avatar4.getHealth());
 		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		//this avatar is for testing
+		// this avatar is for testing
 		
 		
 		// setPlayer1Health&mana
@@ -130,10 +139,12 @@ public class Initalize implements EventProcessor{
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
 
+
 		// setPlayer2Health&mana
 		BasicCommands.setPlayer2Health(out, gameState.getAi());
 		try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
 		BasicCommands.setPlayer2Mana(out, gameState.getAi());
+
 
 		//draw three cards from player deck to form starting hand
 		for (int i = 0; i < 3; i++) {

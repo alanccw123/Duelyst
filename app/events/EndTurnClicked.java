@@ -1,4 +1,7 @@
 package events;
+import java.util.List;
+import java.util.Random;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
@@ -6,6 +9,7 @@ import commands.BasicCommands;
 import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Player;
+import structures.basic.Tile;
 /**
  * Indicates that the user has clicked an object on the game canvas, in this case
  * the end-turn button.
@@ -21,7 +25,7 @@ public class EndTurnClicked implements EventProcessor{
 
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
-		gameState.clearhighlight(out);
+
 		// if it is player's turn, switch to AI's turn
 	    if (gameState.isPlayerTurn()) {
 	        // Player defaultMana = new Player(20, 0);
@@ -42,6 +46,12 @@ public class EndTurnClicked implements EventProcessor{
 			}
 			gameState.displayHand(out);
 
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
 			// AI turn starts
 			BasicCommands.addPlayer1Notification(out, "AI's Turn", 2);
 			gameState.setAiMana(gameState.getTurnNum() + 1);
@@ -50,7 +60,7 @@ public class EndTurnClicked implements EventProcessor{
 			// reset units action
 			gameState.resetAllAction();
 
-			// AI runs a sperate thread
+			// AI runs on a sperate thread
 	        AI opponent = new AI(out, gameState, message);
 	        opponent.start();
 	    }
@@ -70,11 +80,27 @@ public class EndTurnClicked implements EventProcessor{
 	    public void run() {
 			// code for AI goes in here!!!!
 	        try {
-	            Thread.sleep(1000);
+	            Thread.sleep(5000);
 	        } catch (InterruptedException e) {
 	            e.printStackTrace();
 	        }
-
+			
+			// code for esting cards in AI deck
+			Card found = null;
+			for (Card card : gameState.getAIHand()) {
+				if (card.getId() == 24 || card.getId() == 23) {
+					found = card;
+				}
+			}
+			if (found != null) {
+				List<Tile> targets = found.checkTargets(gameState, 2);
+				Random rand = new Random();
+				Tile randomTile = targets.get(rand.nextInt(targets.size()));
+				gameState.removeAICard(found);
+				found.playCard(out, gameState, randomTile);
+			}
+			// code for testing cards in AI deck
+			
 
 	        // Player defaultMana = new Player(20, 0);
 	        // gameState.something = true;

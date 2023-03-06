@@ -270,14 +270,14 @@ public class CommandDemo {
 		String[] deck1Cards = {
 				StaticConfFiles.c_azure_herald,
 				StaticConfFiles.c_azurite_lion,
-				StaticConfFiles.c_sundrop_elixir,
 				StaticConfFiles.c_comodo_charger,
-				StaticConfFiles.c_entropic_decay,
-				StaticConfFiles.c_staff_of_ykir,
 				StaticConfFiles.c_fire_spitter,
 				StaticConfFiles.c_hailstone_golem,
 				StaticConfFiles.c_ironcliff_guardian,
 				StaticConfFiles.c_pureblade_enforcer,
+				StaticConfFiles.c_silverguard_knight,
+				StaticConfFiles.c_sundrop_elixir,
+				StaticConfFiles.c_truestrike
 		};
 
 		for (String deck1CardFile : deck1Cards) {

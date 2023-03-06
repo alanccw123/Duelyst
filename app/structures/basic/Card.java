@@ -1,6 +1,7 @@
 package structures.basic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,12 +41,14 @@ public class Card {
 		List<Tile> targets = new ArrayList<>();
 		Board board = gameState.getGameBoard();
 
+		// get list of units based on whose turn it is
 		if (player == 1) {
 			friendlyunits = gameState.getPlayerUnits();
 		}else if (player == 2) {
 			friendlyunits = gameState.getAIUnits();
 		}
 
+		// check adjacent tiles of all friendy units for unoccupied tiles
 		for (Unit unit : friendlyunits) {
 			Tile friendly = unit.getTile();
 			int x = friendly.getTilex();
@@ -70,11 +73,13 @@ public class Card {
 	// execute the effect of the card
 	// base version is for summoning units, overridden in child classes to implement spell cards
 	public void playCard(ActorRef out, GameState gameState, Tile target) {
-		
-		
-		
-		
-		
+		BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", id), 1);
+
+		// if it is a spell card do nothing
+		if (mapping.get(cardname) == null) {
+			return;
+		}
+
 		// create the corresponding unit
 		Unit unit = BasicObjectBuilders.loadUnit(mapping.get(cardname), id, Unit.class);
 		unit.setPositionByTile(target);
@@ -94,7 +99,52 @@ public class Card {
 
 		// set unit's attack and health
 		unit.setAttack(bigCard.getAttack());
+		unit.setMaxHealth(bigCard.getHealth());
 		unit.setHealth(bigCard.getHealth());
+		
+
+		// card id matching with provoke units
+		Integer[] provokeUnits = new Integer[]{3, 6, 10, 16, 20, 30};
+		if (Arrays.stream(provokeUnits).anyMatch(x -> x == id)) {
+			unit.setprovoke(true); // set the unit to provoke
+		}
+
+		// card id matching with ranged units
+		Integer[] rangedUnits = new Integer[]{2, 11, 25, 35};
+		if (Arrays.stream(rangedUnits).anyMatch(x -> x == id)) {
+			unit.setRanged(true); // set the unit to ranged
+		}
+
+		// card id matching with double attack
+		Integer[] doubleAttackUnits = new Integer[]{7, 17, 26, 36};
+		if (Arrays.stream(doubleAttackUnits).anyMatch(x -> x == id)) {
+			unit.setMaxAttackAction(2); // set the unit's max attack action to 2
+		}
+		
+		// card id matching with flying units
+		Integer[] flyingUnits = new Integer[]{24, 34};
+		if (Arrays.stream(flyingUnits).anyMatch(x -> x == id)) {
+			unit.setFlying(true); // set the unit to flying
+		}
+
+		// if summoning a blaze hound
+		if (id == 23 || id == 33) {
+			//both players draw a card
+			gameState.AIDrawCard();
+			gameState.playerDrawCard();
+			gameState.displayHand(out);
+		}
+
+		// if summoning a azure herald
+		if (id == 5 || id == 15) {
+			for (Unit friendly : gameState.getPlayerUnits()) {
+				// increment avatar's HP by 3
+				if (friendly.getId() == 99) {
+					friendly.setHealth(friendly.getHealth() + 3);
+					BasicCommands.setUnitHealth(out, friendly, friendly.getHealth());
+				}
+			}
+		}
 
 		// render the unit on the frontend
 		EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
@@ -118,9 +168,7 @@ public class Card {
 			e.printStackTrace();
 		}
 		
-		
-		
-		
+		BasicCommands.addPlayer1Notification(out, String.format("Summon unit id: %d", id), 1);
 	}
 
 	// hashmap to find the approriate config files
@@ -142,7 +190,6 @@ public class Card {
 		mapping.put("Rock Pulveriser", StaticConfFiles.u_rock_pulveriser);
 		mapping.put("Serpenti", StaticConfFiles.u_serpenti);
 		mapping.put("WindShrike", StaticConfFiles.u_windshrike);
-		
     }
 	
 	public Card() {};
