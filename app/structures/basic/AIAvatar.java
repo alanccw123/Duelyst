@@ -16,6 +16,9 @@ public class AIAvatar extends Unit{
         super.setHealth(health);
         owner.setHealth(super.getHealth());
         BasicCommands.setPlayer2Health(out, owner);
+        if (getHealth() <= 0) {
+            BasicCommands.addPlayer1Notification(out, "You win! Enemy avatar 0 health", 5);
+        }
     }
 
     public void setOwner(Player owner) {

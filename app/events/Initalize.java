@@ -95,44 +95,6 @@ public class Initalize implements EventProcessor{
 		
 		
 		
-		
-		// this avatar is for testing
-		// Unit avatar3 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
-		// Tile initial3 = gameBoard.getTile(7,4);
-		// avatar3.setPositionByTile(initial3);
-		// avatar3.setPlayer(2);
-		// avatar3.setAttack(2);
-		// avatar3.setHealth(20);
-		// avatar3.resetAction();
-		// gameState.addAIUnit(avatar3);
-		
-		// BasicCommands.drawUnit(out, avatar3, initial3);
-		// try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		// BasicCommands.setUnitAttack(out, avatar3, avatar3.getAttack());
-		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		// BasicCommands.setUnitHealth(out, avatar3, avatar3.getHealth());
-		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		//this avatar is for testing
-		
-		// this avatar is for testing
-		// Unit avatar4 = BasicObjectBuilders.loadUnit(StaticConfFiles.aiAvatar, gameState.getUnitID(), Unit.class);
-		// Tile initial4 = gameBoard.getTile(3,4);
-		// avatar4.setPositionByTile(initial4);
-		// avatar4.setPlayer(2);
-		// avatar4.setAttack(2);
-		// avatar4.setHealth(20);
-		// avatar4.resetAction();
-		// gameState.addAIUnit(avatar4);
-		
-		// BasicCommands.drawUnit(out, avatar4, initial4);
-		// try {Thread.sleep(50);} catch (InterruptedException e) {e.printStackTrace();}
-		// BasicCommands.setUnitAttack(out, avatar4, avatar4.getAttack());
-		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		// BasicCommands.setUnitHealth(out, avatar4, avatar4.getHealth());
-		// try {Thread.sleep(5);} catch (InterruptedException e) {e.printStackTrace();}
-		// this avatar is for testing
-		
-		
 		// setPlayer1Health&mana
 		gameState.setHumanMana(gameState.getTurnNum() + 1);
 		BasicCommands.setPlayer1Health(out, gameState.getPlayer());
@@ -148,13 +110,13 @@ public class Initalize implements EventProcessor{
 
 		//draw three cards from player deck to form starting hand
 		for (int i = 0; i < 3; i++) {
-			gameState.playerDrawCard();
+			gameState.playerDrawCard(out);
 		}
 		gameState.displayHand(out);
 		
 		// draw three cards from AI deck as well
 		for (int i = 0; i < 3; i++) {
-			gameState.AIDrawCard();
+			gameState.AIDrawCard(out);
 		}
 
 		

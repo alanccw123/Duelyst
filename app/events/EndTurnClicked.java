@@ -39,7 +39,7 @@ public class EndTurnClicked implements EventProcessor{
 	        BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
 
 			// draw a card
-	        if (gameState.playerDrawCard()) {
+	        if (gameState.playerDrawCard(out)) {
 	            BasicCommands.addPlayer1Notification(out, "Draw a card", 2);
 	        }else{
 				BasicCommands.addPlayer1Notification(out, "Your hand is full!", 2);
@@ -111,7 +111,7 @@ public class EndTurnClicked implements EventProcessor{
 	        BasicCommands.setPlayer2Mana(out, gameState.getAi());
 
 			// draw a card
-			gameState.AIDrawCard();
+			gameState.AIDrawCard(out);
 
 			// player gain mana
 			gameState.incrementTurn();
