@@ -352,7 +352,9 @@ public class GameState {
 	// takes the attcker and defender units as input
 	public void attack(Unit attacker, Unit defender, ActorRef out) {
 		
-		
+		if (!onGoingAttack) {
+			attacker.spendAttackAction();
+		}
 		// Tile current = gameBoard.searchFor(attacker);
 		// Tile target = gameBoard.searchFor(defender);
 
@@ -405,7 +407,7 @@ public class GameState {
 		}else {
 			// attacker attack
 			//spend attacker's action
-			attacker.spendAttackAction();
+			
 
 		
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
@@ -480,7 +482,7 @@ public class GameState {
 				AIDrawCard(out);
 			}
 			BasicCommands.deleteUnit(out, unit);
-			gameBoard.searchFor(unit).removeUnit();
+			unit.getTile().removeUnit();
 			playerUnits.remove(unit);
 			AIUnits.remove(unit);
 			return false;

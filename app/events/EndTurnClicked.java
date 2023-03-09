@@ -2,16 +2,19 @@ package events;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import akka.actor.ActorRef;
+import commands.BasicCommands;
 import structures.Board;
 import structures.GameState;
 import structures.basic.Card;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import utils.AttackChecker;
+import utils.MovementChecker;
 
 /**
  * Indicates that the user has clicked an object on the game canvas, in this case
@@ -29,7 +32,7 @@ public class EndTurnClicked implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 
-		/*// if it is player's turn, switch to AI's turn
+		// if it is player's turn, switch to AI's turn
 	    if (gameState.isPlayerTurn()) {
 	        // Player defaultMana = new Player(20, 0);
 	        // gameState.humanTurn = false;
@@ -69,6 +72,7 @@ public class EndTurnClicked implements EventProcessor{
 	    }
 	}
 
+
 	class AI extends Thread {
 	    ActorRef out;
 	    GameState gameState;
@@ -82,32 +86,231 @@ public class EndTurnClicked implements EventProcessor{
 
 	    public void run() {
 			// code for AI goes in here!!!!
-	        try {
-	            Thread.sleep(5000);
-	        } catch (InterruptedException e) {
-	            e.printStackTrace();
-	        }
-			
-			// code for esting cards in AI deck
-			Card found = null;
-			for (Card card : gameState.getAIHand()) {
-				if (card.getId() == 24 || card.getId() == 23) {
-					found = card;
+		List<Unit> aiUnits = gameState.getAIUnits();//场上所有电脑单位
+		List<Unit> play=gameState.getPlayerUnits();
+		List<Card> aiHand = gameState.getAIHand();//电脑牌组
+		Map<Integer, Integer> map = init_AiCard(aiHand);//赋值好的电脑牌组评分
+		Board board = gameState.getGameBoard();
+
+
+		Unit humanAvatar = null;
+		for (Unit unit : play) {
+			if (unit.getId() == 99) {
+				humanAvatar = unit;
+			}
+		}
+
+		Card staffOfYKir = null;
+		for (Card card :
+				aiHand) {
+			System.out.println(card.getCardname());
+			if (card.getCardname().equals("Staff of Y'Kir'")){
+				staffOfYKir = card;
+			}
+		}
+
+	
+		if (staffOfYKir != null) {
+			staffOfYKir.playCard(out, gameState, staffOfYKir.checkTargets(gameState, 2).get(0));
+			gameState.removeAICard(staffOfYKir);
+		}
+
+		// search for entropic decay and play it
+		Card entropicDecay = null;
+		for (Card card :
+				aiHand) {
+			if (card.getCardname().equals("Entropic Decay")){
+				entropicDecay = card;
+			}
+		}
+
+
+		if (entropicDecay != null) {
+			List<Tile> targets = entropicDecay.checkTargets(gameState,2);
+
+			int maxHealth = 0;
+			Tile target = null;
+			for (Tile tile :
+					targets) {
+				Unit unit = tile.getUnit();
+				if (unit.getPlayer() == 1 && unit.getHealth() > maxHealth){
+					maxHealth = unit.getHealth();
+					target = tile;
 				}
 			}
-			if (found != null) {
-				List<Tile> targets = found.checkTargets(gameState, 2);
-				Random rand = new Random();
-				Tile randomTile = targets.get(rand.nextInt(targets.size()));
-				gameState.removeAICard(found);
-				found.playCard(out, gameState, randomTile);
-			}
-			// code for testing cards in AI deck
-			
 
-	        // Player defaultMana = new Player(20, 0);
-	        // gameState.something = true;
-	        // gameState.setHumanStep(0);
+			if (maxHealth >= 5) {
+				entropicDecay.playCard(out, gameState, target);
+				gameState.removeAICard(entropicDecay);
+			}
+			
+		}
+		
+		// spend unit action
+		Unit selected = null;
+		while (true) {
+			for (Unit unit : aiUnits) {
+				if (unit.canMove() || (unit.canAttack() && !AttackChecker.checkAttackRange(unit.getTile(), board, 2).isEmpty())) {
+					selected = unit;
+				}
+			}
+
+			if (selected == null) {
+				break;
+			}
+
+			if (gameState.isReady()) {
+				if (selected.canMove()) {
+					List<Tile> targetsForAttack = AttackChecker.checkAllAttackRange(MovementChecker.checkMovement(selected.getTile(), board), board, 2);
+					targetsForAttack.addAll(AttackChecker.checkAttackRange(selected.getTile(), board, 2));
+	
+					// initiate an attack if there any valid target
+					if (!targetsForAttack.isEmpty()) {
+						Tile targetForAttack = null;
+						int maxScore = 0;
+						// prioritize enemy unit with the highest score
+						for (Tile tile : targetsForAttack) {
+							if (attackScore(tile.getUnit()) > maxScore) {
+								targetForAttack = tile;
+								maxScore = attackScore(tile.getUnit());
+							}
+						}
+	
+						//perform the attack
+						gameState.attack(selected, targetForAttack.getUnit(), out);
+					
+					// else just move the unit
+					}else {
+						List<Tile> range = MovementChecker.checkMovement(selected.getTile(), board);
+						int x = humanAvatar.getTile().getTilex();
+						int y = humanAvatar.getTile().getTiley();
+	
+						//check which tile is the closest to player's avatar
+						Tile closest = null;
+						int shortestDistance = 12; // 12 tile is the maximum distance
+						for (Tile tile : range) {
+							int distance = Math.abs(tile.getTilex() - x) + Math.abs(tile.getTiley() - y);
+							if (distance < shortestDistance) {
+								closest = tile;
+								shortestDistance = distance;
+							}
+						}
+	
+						//move the unit closer to player's avatar
+						gameState.moveUnit(selected, closest, out);
+	
+					}
+					
+				}else if (selected.canAttack()) {
+					List<Tile> targetsForAttack = AttackChecker.checkAttackRange(selected.getTile(), board, 2);
+	
+					// initiate an attack if there any valid target
+					if (!targetsForAttack.isEmpty()) {
+						Tile targetForAttack = null;
+						int maxScore = 0;
+						// prioritize enemy unit with the highest score
+						for (Tile tile : targetsForAttack) {
+							if (attackScore(tile.getUnit()) > maxScore) {
+								targetForAttack = tile;
+								maxScore = attackScore(tile.getUnit());
+							}
+						}
+	
+						//perform the attack
+						gameState.attack(selected, targetForAttack.getUnit(), out);
+					}
+	
+						
+				}
+			}
+
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			selected = null;
+		}
+	
+		
+
+
+		// Spend unit action
+		// for (Unit unit : aiUnits) {
+		// 	// if an unit can attack, it always attack first
+		// 	if (unit.canMove()) {
+		// 		List<Tile> targetsForAttack = AttackChecker.checkAllAttackRange(MovementChecker.checkMovement(unit.getTile(), board), board, 2);
+		// 		targetsForAttack.addAll(AttackChecker.checkAttackRange(unit.getTile(), board, 2));
+
+		// 		// initiate an attack if there any valid target
+		// 		if (!targetsForAttack.isEmpty()) {
+		// 			Tile targetForAttack = null;
+		// 			int maxScore = 0;
+		// 			// prioritize enemy unit with the highest score
+		// 			for (Tile tile : targetsForAttack) {
+		// 				if (attackScore(tile.getUnit()) > maxScore) {
+		// 					targetForAttack = tile;
+		// 					maxScore = attackScore(tile.getUnit());
+		// 				}
+		// 			}
+
+		// 			//perform the attack
+		// 			gameState.attack(unit, targetForAttack.getUnit(), out);
+				
+		// 		// else just move the unit
+		// 		}else {
+		// 			List<Tile> range = MovementChecker.checkMovement(unit.getTile(), board);
+		// 			int x = humanAvatar.getTile().getTilex();
+		// 			int y = humanAvatar.getTile().getTiley();
+
+		// 			//check which tile is the closest to player's avatar
+		// 			Tile closest = null;
+		// 			int shortestDistance = 12; // 12 tile is the maximum distance
+		// 			for (Tile tile : range) {
+		// 				int distance = Math.abs(tile.getTilex() - x) + Math.abs(tile.getTiley() - y);
+		// 				if (distance < shortestDistance) {
+		// 					closest = tile;
+		// 					shortestDistance = distance;
+		// 				}
+		// 			}
+
+		// 			//move the unit closer to player's avatar
+		// 			gameState.moveUnit(unit, closest, out);
+		// 		}
+				
+		// 	}
+		// }
+			
+			// summon units
+			while (Play_Card(map, aiHand, gameState.getAiMana()) != null) {
+				Card to_play = Play_Card(map, aiHand, gameState.getAiMana()); // pick the unit card with the highest rating
+				List<Tile> targets = to_play.checkTargets(gameState, 2); // get the tiles to summon the unit on
+				int x = humanAvatar.getTile().getTilex();
+				int y = humanAvatar.getTile().getTiley();
+
+				//check which tile is the closest to player's avatar
+				Tile closest = null;
+				int shortestDistance = 12; // 12 tile is the maximum distance
+				for (Tile tile : targets) {
+					int distance = Math.abs(tile.getTilex() - x) + Math.abs(tile.getTiley() - y);
+					if (distance < shortestDistance) {
+						closest = tile;
+						shortestDistance = distance;
+					}
+				}
+
+				to_play.playCard(out, gameState, closest);
+				gameState.removeAICard(to_play);
+
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
 			
 			// discard unused mana
 	        gameState.setAiMana(0);
@@ -125,66 +328,8 @@ public class EndTurnClicked implements EventProcessor{
 			BasicCommands.setPlayer1Mana(out, gameState.getPlayer());
 			gameState.resetAllAction();
 			gameState.changeTurn();
-	    }*/
-		List<Unit> aiUnits = gameState.getAIUnits();//场上所有电脑单位
-		List<Unit> play=gameState.getPlayerUnits();
-		List<Card> aiHand = gameState.getAIHand();//电脑牌组
-		Map<Integer, Integer> map = init_AiCard(aiHand);//赋值好的电脑牌组评分
-//		Card card = Play_Card(map, aiHand);
-
-		// search for entropic decay and play it
-		Card entropicDecay = null;
-		for (Card card :
-				aiHand) {
-			if (card.getCardname().equals("Entropic Decay")){
-				entropicDecay = card;
-			}
-		}
-
-		List<Tile> targets = entropicDecay.checkTargets();
-
-		int maxHealth = 0;
-		Tile target = null;
-		for (Tile tile :
-				targets) {
-			Unit unit = tile.getUnit();
-			if (unit.getPlayer() == 1 && unit.getHealth() > maxHealth){
-				maxHealth = unit.getHealth();
-				target = tile;
-			}
-		}
-
-		entropicDecay.playCard(out, gameState, target);
-
-		Card
-
-
-		//如果为法术牌选定敌方血量最高单位做攻击
-//		Unit unit=null;//攻击单位
-//		if(card.getCardname().equals("Entropic Decay")){
-//			int max=0;
-//
-//			for(int i=0;i<play.size();i++){
-//				if(play.get(i).getHealth()>max){
-//					unit=play.get(i);
-//					max=play.get(i).getHealth();
-//				}
-//			}
-//
-//		}else if(card.getCardname().equals("Staff of Y'Kir")) {
-//			int max=0;
-//
-//			for(int i=0;i<play.size();i++){
-//				if(play.get(i).getHealth()>max){
-//					unit=play.get(i);
-//					max=play.get(i).getHealth();
-//				}
-//			}
-//		}
-
-		Map<Integer, Integer> map1 = init_PlayerCard(gameState.getPlayerHand());//玩家手牌的评分
-		;//选定攻击单位
-		gameState.attack(gameState.unitLastClicked,Attack_Play(map1,gameState),out);//攻击玩家
+	    }
+		
 	}
 
 	/**
@@ -211,12 +356,15 @@ public class EndTurnClicked implements EventProcessor{
 			}else if(Ai_Cards.get(i).getCardname().equals("Hailstone Golem")){
 				map.put(Ai_Cards.get(i).getId(),56);
 			}else if(Ai_Cards.get(i).getCardname().equals("Serpenti")){
-				map.put(Ai_Cards.get(i).getId(),65);
-			}else if(Ai_Cards.get(i).getCardname().equals("botAllUnitsCardsScore")){
-				map.put(Ai_Cards.get(i).getId(),80);
-			}else if(Ai_Cards.get(i).getCardname().equals("Entropic Decay")){
-				map.put(Ai_Cards.get(i).getId(),100);
+				map.put(Ai_Cards.get(i).getId(),70);
+			}else {
+				map.put(Ai_Cards.get(i).getId(),0);
 			}
+			// }else if(Ai_Cards.get(i).getCardname().equals("botAllUnitsCardsScore")){
+			// 	map.put(Ai_Cards.get(i).getId(),80);
+			// }else if(Ai_Cards.get(i).getCardname().equals("Entropic Decay")){
+			// 	map.put(Ai_Cards.get(i).getId(),100);
+			// }
 		}
 		return map;
 	}
@@ -229,12 +377,16 @@ public class EndTurnClicked implements EventProcessor{
 	 * @param cards
 	 * @return
 	 */
-	public Card Play_Card(Map<Integer,Integer> integerMap,List<Card> cards){
-		Card card=cards.get(0);//评分最大的牌
-		for(int i=1;i<cards.size();i++){
-			if(integerMap.get(card.getId())<integerMap.get(cards.get(i).getId())){
-				card=cards.get(i);
-			}
+	public Card Play_Card(Map<Integer,Integer> integerMap,List<Card> cards, int mana){
+		Card card=null;//评分最大的牌
+		for(int i=0;i<cards.size();i++){
+			if (cards.get(i).getManacost() <= mana) {
+				if (card == null) {
+					card = cards.get(i);
+				}else if(integerMap.get(card.getId())<integerMap.get(cards.get(i).getId())){
+					card=cards.get(i);
+				}
+			}	
 		}
 
 		return card;
@@ -246,18 +398,18 @@ public class EndTurnClicked implements EventProcessor{
 	 * @return
 	 */
 	//算某一个格子对对方的化身差多远  用
-	public Summon(GameState gameState){
-		Board gameBoard = null;
-		int min=100;
-		for(int i=0;i<9;i++){
-			for (int j=0;j<5;j++){
-				if(Math.abs(i-gameState.get(99).getTile().getTilex())){
-					gameBoard = gameState.getGameBoard();
-				}
-			}
-		}
-		return gameBoard;
-	}
+	// public Summon(GameState gameState){
+	// 	Board gameBoard = null;
+	// 	int min=100;
+	// 	for(int i=0;i<9;i++){
+	// 		for (int j=0;j<5;j++){
+	// 			if(Math.abs(i-gameState.get(99).getTile().getTilex())){
+	// 				gameBoard = gameState.getGameBoard();
+	// 			}
+	// 		}
+	// 	}
+	// 	return gameBoard;
+	// }
 
 	/**
 	 *
@@ -325,5 +477,26 @@ public class EndTurnClicked implements EventProcessor{
 		}
 
 		return unit;
+	}
+
+	public int attackScore(Unit unit) {
+		if (unit.getId() == 99) {
+			return 100;
+		}
+		int score = 0;
+
+		score += Math.min(25, unit.getAttack() * 5);
+		score += Math.min(25, 60 / unit.getHealth());
+		if (unit.isRanged()) {
+			score+=20;
+		}
+		if (unit.isProvoke()) {
+			score+=20;
+		}
+		if (!unit.canCounterAttack()) {
+			score+=10;
+		}
+
+		return score;
 	}
 }
