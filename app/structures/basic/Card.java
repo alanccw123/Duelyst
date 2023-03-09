@@ -28,7 +28,7 @@ public class Card {
 	int id;
 	
 	String cardname;
-	int manacost;
+	protected int manacost;
 	
 	MiniCard miniCard;
 	BigCard bigCard;
@@ -41,7 +41,22 @@ public class Card {
 		List<Tile> targets = new ArrayList<>();
 		Board board = gameState.getGameBoard();
 
-		// get list of units based on whose turn it is
+		// check if the card is air-drop unit
+		Integer[] airDropUnits = new Integer[]{6, 16, 28, 38};
+		if (Arrays.stream(airDropUnits).anyMatch(x -> x == id)) {
+			// if so, all tiles un-occupied are valid
+			for (int i = 0; i < board.board.length; i++) {
+				for (int j = 0; j < board.board[i].length; j++) {
+					if (!board.getTile(i, j).hasUnit) {
+						targets.add(board.getTile(i, j));
+					}
+				}
+			}
+
+			return targets;
+		}
+
+		// get list of friendly units based on whose turn it is
 		if (player == 1) {
 			friendlyunits = gameState.getPlayerUnits();
 		}else if (player == 2) {
@@ -73,8 +88,9 @@ public class Card {
 	// execute the effect of the card
 	// base version is for summoning units, overridden in child classes to implement spell cards
 	public void playCard(ActorRef out, GameState gameState, Tile target) {
-		BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", id), 1);
-
+		
+			BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", id), 1);
+		
 		// if it is a spell card do nothing
 		if (mapping.get(cardname) == null) {
 			return;
@@ -130,8 +146,8 @@ public class Card {
 		// if summoning a blaze hound
 		if (id == 23 || id == 33) {
 			//both players draw a card
-			gameState.AIDrawCard();
-			gameState.playerDrawCard();
+			gameState.AIDrawCard(out);
+			gameState.playerDrawCard(out);
 			gameState.displayHand(out);
 		}
 

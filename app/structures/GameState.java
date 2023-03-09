@@ -112,33 +112,6 @@ public class GameState {
 		}
 	}
 	
-	
-	
-	// public boolean something = false;
-	// private int humanStep;
-	// private int aiStep;
-	// public void addHumanStep(int step) {
-	// 	humanStep = humanStep + step; 
-	// }
-	// public void addAiStep(int step) {
-	// 	humanStep =+ step; 
-	// }
-	
-	
-	// public int getHumanStep() {
-	// 	return humanStep;
-	// }
-	// public int getAiStep() {
-	// 	return aiStep;
-	// }
-	
-	
-	// public void setHumanStep(int n) {
-	// 	this.humanStep = n;
-	// }
-	// public void setAiStep(int n) {
-	// 	this.aiStep = n;
-	// }
 
 	// for testing demo
 	public boolean gameInitalised = false;
@@ -159,10 +132,11 @@ public class GameState {
 
 	// draw a card from player deck to hand
 	// return a boolean indicating whether the draw is successful
-	public boolean playerDrawCard() {
+	public boolean playerDrawCard(ActorRef out) {
 		if (playerDeck.isEmpty()) {
 			// run of cards, player lose
-			
+			BasicCommands.addPlayer1Notification(out, "You lose! Your deck is out of cards", 5);
+			return false;
 		}
 		Card card = playerDeck.remove(0);
 		if (playerHand.size() < 6) {
@@ -175,9 +149,11 @@ public class GameState {
 	
 	// draw a card from AI deck to hand
 	// return a boolean indicating whether the draw is successful
-	public boolean AIDrawCard() {
+	public boolean AIDrawCard(ActorRef out) {
 		if (AIDeck.isEmpty()) {
 			// run of cards, ai lose
+			BasicCommands.addPlayer1Notification(out, "You win! Enemy deck is out of cards", 5);
+			return false;
 		}
 		Card card = AIDeck.remove(0);
 		if (AIHand.size() < 6) {
@@ -232,58 +208,6 @@ public class GameState {
 	public List<Card> getAIHand() {
 		return AIHand;
 	}
-
-	// public void summonPlayerUnit(Unit unit, Tile tile, ActorRef out) {
-	// 	EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
-	// 	BasicCommands.playEffectAnimation(out, summon, tile);
-	// 	BasicCommands.drawUnit(out, unit, tile);
-	// 	try {
-	// 		Thread.sleep(5);
-	// 	} catch (InterruptedException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-	// 	try {
-	// 		Thread.sleep(5);
-	// 	} catch (InterruptedException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-	// 	try {
-	// 		Thread.sleep(5);
-	// 	} catch (InterruptedException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	playerUnits.add(unit);
-	// 	unit.setPlayer(1);
-	// 	unit.setPositionByTile(tile);		
-	// }
-
-	// public void summonAIUnit(Unit unit, Tile tile, ActorRef out) {
-	// 	EffectAnimation summon = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_summon);
-	// 	BasicCommands.playEffectAnimation(out, summon, tile);
-	// 	BasicCommands.drawUnit(out, unit, tile);
-	// 	try {
-	// 		Thread.sleep(5);
-	// 	} catch (InterruptedException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	BasicCommands.setUnitAttack(out, unit, unit.getAttack());
-	// 	try {
-	// 		Thread.sleep(5);
-	// 	} catch (InterruptedException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	BasicCommands.setUnitHealth(out, unit, unit.getHealth());
-	// 	try {
-	// 		Thread.sleep(5);
-	// 	} catch (InterruptedException e) {
-	// 		e.printStackTrace();
-	// 	}
-	// 	AIUnits.add(unit);
-	// 	unit.setPlayer(2);
-	// 	unit.setPositionByTile(tile);	
-	// }
 
 	public void addPlayerUnit(Unit unit) {
 		playerUnits.add(unit);
@@ -535,6 +459,7 @@ public class GameState {
 		}
 
 		unit.setHealth(unit.getHealth() - damage);
+		
 		if (unit.getHealth() <= 0) {
 			// the unit is dead
 			BasicCommands.setUnitHealth(out, unit, 0);
@@ -547,7 +472,7 @@ public class GameState {
 			// if the dying unit is windstrike
 			if (unit.getId() == 24 || unit.getId() == 34) {
 				// AI draws a card
-				AIDrawCard();
+				AIDrawCard(out);
 			}
 			BasicCommands.deleteUnit(out, unit);
 			gameBoard.searchFor(unit).removeUnit();

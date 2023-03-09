@@ -50,6 +50,8 @@ public class Unit {
 	public void setHealth(int health) {
 		if (health > maxHealth) {
 			this.health = maxHealth;
+		}else if (health < 0) {
+			this.health = 0;
 		}else {
 			this.health = health;
 		}
@@ -59,6 +61,9 @@ public class Unit {
 		this.maxHealth = maxHealth;
 	}
 
+	public int getMaxHealth() {
+		return maxHealth;
+	}
 	public int getAttack() {
 		return attack;
 	}
