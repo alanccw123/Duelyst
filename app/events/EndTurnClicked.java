@@ -155,7 +155,7 @@ public class EndTurnClicked implements EventProcessor{
 				map.put(Ai_Cards.get(i).getId(),60);
 			}else if(Ai_Cards.get(i).getCardname().equals("Blaze Hound")){
 				map.put(Ai_Cards.get(i).getId(),61);
-			}else if(Ai_Cards.get(i).getCardname().equals("Windshrike")){
+			}else if(Ai_Cards.get(i).getCardname().equals("WindShrike")){
 				map.put(Ai_Cards.get(i).getId(),50);
 			}else if(Ai_Cards.get(i).getCardname().equals("Hailstone Golem")){
 				map.put(Ai_Cards.get(i).getId(),56);
