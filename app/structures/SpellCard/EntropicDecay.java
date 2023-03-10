@@ -35,6 +35,8 @@ public class EntropicDecay extends Card{
 
     @Override
     public void playCard(ActorRef out, GameState gameState, Tile target) {
+        BasicCommands.addPlayer1Notification(out, "Entropic decay", 1);
+
         Unit selected = target.getUnit();
 
         EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_martyrdom);

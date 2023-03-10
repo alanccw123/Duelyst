@@ -35,7 +35,7 @@ public class Card {
 
 	// check for targets to play the card on
 	// returns a list of tiles
-	// base version is for summoning units, overidden in child classes to implement spell cards
+	// base version is for summoning units, overide in child classes to implement spell cards
 	public List<Tile> checkTargets(GameState gameState, int player) {
 		List<Unit> friendlyunits = new ArrayList<>();
 		List<Tile> targets = new ArrayList<>();
@@ -86,7 +86,7 @@ public class Card {
 	}
 
 	// execute the effect of the card
-	// base version is for summoning units, overridden in child classes to implement spell cards
+	// base version is for summoning units, override in child classes to implement spell cards
 	public void playCard(ActorRef out, GameState gameState, Tile target) {
 		// BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", id), 1);
 
@@ -97,6 +97,9 @@ public class Card {
 
 		// create the corresponding unit
 		Unit unit = BasicObjectBuilders.loadUnit(mapping.get(cardname), id, Unit.class);
+		if (unit.getId() == 29 || unit.getId() == 39) {
+			unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golemR, id, Unit.class);
+		}
 		unit.setPositionByTile(target);
 
 		// decrement mana 

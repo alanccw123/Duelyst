@@ -31,7 +31,7 @@ public class SundropElixir extends Card{
 
     @Override
     public void playCard(ActorRef out, GameState gameState, Tile target) {
-        BasicCommands.addPlayer1Notification(out, "Play Sundrop Elixir", 1);
+        BasicCommands.addPlayer1Notification(out, "Sundrop Elixir", 1);
         Unit selected = target.getUnit();
         selected.setHealth(selected.getHealth() + 5);
 

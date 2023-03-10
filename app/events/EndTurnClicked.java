@@ -180,6 +180,11 @@ public class EndTurnClicked implements EventProcessor{
 
 			// break out of the loop if no unit can be selected
 			if (selected == null) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				break;
 			}
 
@@ -309,11 +314,6 @@ public class EndTurnClicked implements EventProcessor{
 			// 	}
 			// }
 			
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			
 			
 			
@@ -326,7 +326,19 @@ public class EndTurnClicked implements EventProcessor{
 				
 				Card topScoreCard = Play_Card(map1,gameState.getAIHand(),gameState.getAiMana());
 				List<Tile> targets = topScoreCard.checkTargets(gameState, 2);
-				topScoreCard.playCard(out, gameState,getClosestTile(targets,xPos,yPos) );
+
+				Tile closest = getClosestTile(targets, xPos, yPos);
+				// for debugging
+				BasicCommands.drawTile(out, closest, 1);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				BasicCommands.drawTile(out, closest, 0);
+
+				//play the card
+				topScoreCard.playCard(out, gameState, closest);
 				gameState.removeAICard(topScoreCard);
 				try {
 		            Thread.sleep(2000);
@@ -513,9 +525,12 @@ public class EndTurnClicked implements EventProcessor{
 		return score;
 	}
 	public Card Play_Card(Map<Integer,Integer> integerMap,List<Card> cards,int mana){//Cards with maximum rating and sufficient mana
-		Card card=cards.get(0);
-			for(int i=1;i<cards.size();i++){
+		Card card=null;
+			for(int i=0;i<cards.size();i++){
 				if (cards.get(i).getManacost() <= mana) {
+					if (card == null) {
+						card = cards.get(i);
+					}
 					if(integerMap.get(card.getId())<integerMap.get(cards.get(i).getId())){
 						card=cards.get(i);
 					}

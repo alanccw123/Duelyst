@@ -31,7 +31,7 @@ public class Truestrike extends Card{
         Unit selected = target.getUnit();
         
 
-        BasicCommands.addPlayer1Notification(out, "Play truestrike", 1);
+        BasicCommands.addPlayer1Notification(out, "Truestrike", 1);
         
         EffectAnimation inmolation = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_inmolation);
         BasicCommands.playEffectAnimation(out, inmolation, target);
