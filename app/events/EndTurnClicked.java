@@ -1,4 +1,7 @@
 package events;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +14,7 @@ import commands.BasicCommands;
 import structures.Board;
 import structures.GameState;
 import structures.basic.Card;
+import structures.basic.PlayerAvatar;
 import structures.basic.Tile;
 import structures.basic.Unit;
 import utils.AttackChecker;
@@ -278,34 +282,60 @@ public class EndTurnClicked implements EventProcessor{
 		}
 			
 			// Third, summon units
-			while (Play_Card(map, aiHand, gameState.getAiMana()) != null) {
-				Card to_play = Play_Card(map, aiHand, gameState.getAiMana()); // pick the unit card with the highest rating
-				List<Tile> targets = to_play.checkTargets(gameState, 2); // get the tiles to summon the unit on
-				int x = humanAvatar.getTile().getTilex();
-				int y = humanAvatar.getTile().getTiley();
+			// while (Play_Card(map, aiHand, gameState.getAiMana()) != null) {
+			// 	Card to_play = Play_Card(map, aiHand, gameState.getAiMana()); // pick the unit card with the highest rating
+			// 	List<Tile> targets = to_play.checkTargets(gameState, 2); // get the tiles to summon the unit on
+			// 	int x = humanAvatar.getTile().getTilex();
+			// 	int y = humanAvatar.getTile().getTiley();
 
-				//check which tile is the closest to player's avatar
-				Tile closest = null;
-				int shortestDistance = 12; // 12 tile is the maximum distance
-				for (Tile tile : targets) {
-					int distance = Math.abs(tile.getTilex() - x) + Math.abs(tile.getTiley() - y);
-					if (distance < shortestDistance) {
-						closest = tile;
-						shortestDistance = distance;
-					}
-				}
+			// 	//check which tile is the closest to player's avatar
+			// 	Tile closest = null;
+			// 	int shortestDistance = 12; // 12 tile is the maximum distance
+			// 	for (Tile tile : targets) {
+			// 		int distance = Math.abs(tile.getTilex() - x) + Math.abs(tile.getTiley() - y);
+			// 		if (distance < shortestDistance) {
+			// 			closest = tile;
+			// 			shortestDistance = distance;
+			// 		}
+			// 	}
 
-				to_play.playCard(out, gameState, closest);
-				gameState.removeAICard(to_play);
+			// 	to_play.playCard(out, gameState, closest);
+			// 	gameState.removeAICard(to_play);
 
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+			// 	try {
+			// 		Thread.sleep(2000);
+			// 	} catch (InterruptedException e) {
+			// 		e.printStackTrace();
+			// 	}
+			// }
+			
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 			
 			
+			
+			// Zihao's code
+			
+			Map<Integer, Integer> map1 = init_AiCard(gameState.getAIHand());
+			int xPos = humanAvatar.getTile().getTilex();
+			int yPos = humanAvatar.getTile().getTiley();
+			while(!gameState.getAIHand().isEmpty() && LowestManaCard(gameState.getAIHand()).getManacost() <= gameState.getAiMana()){
+				
+				Card topScoreCard = Play_Card(map1,gameState.getAIHand(),gameState.getAiMana());
+				List<Tile> targets = topScoreCard.checkTargets(gameState, 2);
+				topScoreCard.playCard(out, gameState,getClosestTile(targets,xPos,yPos) );
+				gameState.removeAICard(topScoreCard);
+				try {
+		            Thread.sleep(2000);
+		        } catch (InterruptedException e) {
+		            e.printStackTrace();
+		        }
+			}
+			
+			//End of AI's turn
 			
 			// discard unused mana
 	        gameState.setAiMana(0);
@@ -344,11 +374,11 @@ public class EndTurnClicked implements EventProcessor{
 			}else if(Ai_Cards.get(i).getCardname().equals("Pyromancer")){
 				map.put(Ai_Cards.get(i).getId(),65);
 			}else if(Ai_Cards.get(i).getCardname().equals("Bloodshard Golem")){
-				map.put(Ai_Cards.get(i).getId(),60);
+				map.put(Ai_Cards.get(i).getId(),50);
 			}else if(Ai_Cards.get(i).getCardname().equals("Blaze Hound")){
 				map.put(Ai_Cards.get(i).getId(),61);
-			}else if(Ai_Cards.get(i).getCardname().equals("Windshrike")){
-				map.put(Ai_Cards.get(i).getId(),50);
+			}else if(Ai_Cards.get(i).getCardname().equals("WindShrike")){
+				map.put(Ai_Cards.get(i).getId(),60);
 			}else if(Ai_Cards.get(i).getCardname().equals("Hailstone Golem")){
 				map.put(Ai_Cards.get(i).getId(),56);
 			}else if(Ai_Cards.get(i).getCardname().equals("Serpenti")){
@@ -361,27 +391,27 @@ public class EndTurnClicked implements EventProcessor{
 	}
 
 
-	/***
-	 *
-	 * 获取Al评分最大的牌并返回
-	 * @param integerMap
-	 * @param cards
-	 * @return
-	 */
-	public Card Play_Card(Map<Integer,Integer> integerMap,List<Card> cards, int mana){
-		Card card=null;//评分最大的牌
-		for(int i=0;i<cards.size();i++){
-			if (cards.get(i).getManacost() <= mana) {
-				if (card == null) {
-					card = cards.get(i);
-				}else if(integerMap.get(card.getId())<integerMap.get(cards.get(i).getId())){
-					card=cards.get(i);
-				}
-			}	
-		}
+	// /***
+	//  *
+	//  * 获取Al评分最大的牌并返回
+	//  * @param integerMap
+	//  * @param cards
+	//  * @return
+	//  */
+	// public Card Play_Card(Map<Integer,Integer> integerMap,List<Card> cards, int mana){
+	// 	Card card=null;//评分最大的牌
+	// 	for(int i=0;i<cards.size();i++){
+	// 		if (cards.get(i).getManacost() <= mana) {
+	// 			if (card == null) {
+	// 				card = cards.get(i);
+	// 			}else if(integerMap.get(card.getId())<integerMap.get(cards.get(i).getId())){
+	// 				card=cards.get(i);
+	// 			}
+	// 		}	
+	// 	}
 
-		return card;
-	}
+	// 	return card;
+	// }
 
 	/**
 	 *
@@ -482,4 +512,50 @@ public class EndTurnClicked implements EventProcessor{
 
 		return score;
 	}
+	public Card Play_Card(Map<Integer,Integer> integerMap,List<Card> cards,int mana){//Cards with maximum rating and sufficient mana
+		Card card=cards.get(0);
+			for(int i=1;i<cards.size();i++){
+				if (cards.get(i).getManacost() <= mana) {
+					if(integerMap.get(card.getId())<integerMap.get(cards.get(i).getId())){
+						card=cards.get(i);
+					}
+				}
+			}
+		return card;
+	}
+	public Card LowestManaCard(List<Card> cards){//The card with the smallest mana
+		Card targetCard = null;
+		int mana = 9;
+		
+			for(Card card : cards){
+				if(card.getManacost()<= mana) {
+					mana = card.getManacost();
+					targetCard = card;
+				}
+			}
+		
+		return targetCard;
+	}
+	 public static Tile getClosestTile(List<Tile> tiles, int x, int y) {
+	        if (tiles.isEmpty()) {
+	            return null;
+	        }
+	        // Sort the tiles by their distance from (x, y)
+	        Collections.sort(tiles, Comparator.comparingDouble(tile -> tile.distanceFromPosition(x, y)));
+	        // Find the minimum distance
+	        double minDistance = tiles.get(0).distanceFromPosition(x, y);
+	        // Find the indexes of all tiles with minimum distance
+	        List<Integer> minIndexes = new ArrayList<>();
+	        for (int i = 0; i < tiles.size(); i++) {
+	            if (tiles.get(i).distanceFromPosition(x, y) == minDistance) {
+	                minIndexes.add(i);
+	            } else {
+	                break;
+	            }
+	        }
+	        // Randomly select one of the tiles with minimum distance
+	        Random rand = new Random();
+	        int randomIndex = minIndexes.get(rand.nextInt(minIndexes.size()));
+	        return tiles.get(randomIndex);
+	    }
 }

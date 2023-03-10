@@ -101,6 +101,7 @@ public class TileClicked implements EventProcessor{
 
 					// keep tracked of the unit selected
 					gameState.unitLastClicked = selected;
+					
 					// String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
 					// BasicCommands.addPlayer1Notification(out, debug, 2);
 

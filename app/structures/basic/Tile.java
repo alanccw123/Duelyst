@@ -124,7 +124,9 @@ public class Tile {
 	public void setTiley(int tiley) {
 		this.tiley = tiley;
 	}
-	
+	public double distanceFromPosition(int x, int y) {
+        return Math.sqrt(Math.pow(this.xpos - x, 2) + Math.pow(this.ypos - y, 2));
+    }
 	/**
 	 * Loads a tile from a configuration file
 	 * parameters.
