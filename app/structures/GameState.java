@@ -135,7 +135,7 @@ public class GameState {
 	public boolean playerDrawCard(ActorRef out) {
 		if (playerDeck.isEmpty()) {
 			// run of cards, player lose
-			BasicCommands.addPlayer1Notification(out, "You lose! Your deck is out of cards", 5);
+			BasicCommands.addPlayer1Notification(out, "You lose! Your deck is out of cards", 10);
 			return false;
 		}
 		Card card = playerDeck.remove(0);
@@ -155,7 +155,7 @@ public class GameState {
 	public boolean AIDrawCard(ActorRef out) {
 		if (AIDeck.isEmpty()) {
 			// run of cards, ai lose
-			BasicCommands.addPlayer1Notification(out, "You win! Enemy deck is out of cards", 5);
+			BasicCommands.addPlayer1Notification(out, "You win! Enemy deck is out of cards", 10);
 			return false;
 		}
 		Card card = AIDeck.remove(0);
@@ -406,22 +406,21 @@ public class GameState {
 		// else if the target is now in range
 		}else {
 			// attacker attack
-			//spend attacker's action
 			
 
 		
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			
 			//play ranged attack animation if the attacker is ranged
 			if (attacker.isRanged()) {
 				EffectAnimation projectile = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_projectiles);
 				BasicCommands.playProjectileAnimation(out, projectile, 11, current, target);
 			}
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
 
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
 
@@ -430,7 +429,7 @@ public class GameState {
 				
 				BasicCommands.playUnitAnimation(out, defender, UnitAnimationType.attack);
 				try {
-					Thread.sleep(1000);
+					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -447,12 +446,12 @@ public class GameState {
 	// helper method for dealing damage to an unit 
 	// returns a boolean indicating whether the unit survives the damage
 	public boolean unitTakeDamage(Unit unit, ActorRef out, int damage) {
-		BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		// BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
+		// try {
+		// 	Thread.sleep(1000);
+		// } catch (InterruptedException e) {
+		// 	e.printStackTrace();
+		// }
 		
 		// if the damaged unit is avatar
 		if (unit.getId() == 99) {

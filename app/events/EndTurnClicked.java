@@ -47,9 +47,7 @@ public class EndTurnClicked implements EventProcessor{
 			// draw a card
 	        if (gameState.playerDrawCard(out)) {
 	            BasicCommands.addPlayer1Notification(out, "Draw a card", 2);
-	        }else{
-				BasicCommands.addPlayer1Notification(out, "Your hand is full!", 2);
-			}
+	        }
 			gameState.displayHand(out);
 
 			try {
@@ -116,6 +114,12 @@ public class EndTurnClicked implements EventProcessor{
 		if (staffOfYKir != null) {
 			staffOfYKir.playCard(out, gameState, staffOfYKir.checkTargets(gameState, 2).get(0));
 			gameState.removeAICard(staffOfYKir);
+
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 		// check if entropic decay is in hand
@@ -144,9 +148,15 @@ public class EndTurnClicked implements EventProcessor{
 			}
 
 			// not wasting it on units with too little health
-			if (maxHealth >= 5) {
+			if (maxHealth > 5) {
 				entropicDecay.playCard(out, gameState, target);
 				gameState.removeAICard(entropicDecay);
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 			
 		}
@@ -169,8 +179,8 @@ public class EndTurnClicked implements EventProcessor{
 				break;
 			}
 
-			// proceed with the next action only when no unit is moving in the frontend UI
-			if (gameState.isReady()) {
+			// proceed with the next action only when there is no on-going attack or movement in the frontend UI
+			if (gameState.isReady() && !gameState.onGoingAttack()) {
 
 				// if the unit still has move action
 				if (selected.canMove()) {
@@ -184,12 +194,21 @@ public class EndTurnClicked implements EventProcessor{
 						int maxScore = 0;
 						// prioritize enemy unit with the highest score
 						for (Tile tile : targetsForAttack) {
-							if (attackScore(tile.getUnit()) > maxScore) {
+							if (attackScore(tile.getUnit(),selected.getAttack()) > maxScore) {
 								targetForAttack = tile;
-								maxScore = attackScore(tile.getUnit());
+								maxScore = attackScore(tile.getUnit(),selected.getAttack());
 							}
 						}
-	
+						
+						// for debugging
+						BasicCommands.drawTile(out, targetForAttack, 2);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						BasicCommands.drawTile(out, targetForAttack, 0);
+
 						//perform the attack
 						gameState.attack(selected, targetForAttack.getUnit(), out);
 					
@@ -227,12 +246,20 @@ public class EndTurnClicked implements EventProcessor{
 						int maxScore = 0;
 						// prioritize enemy unit with the highest score
 						for (Tile tile : targetsForAttack) {
-							if (attackScore(tile.getUnit()) > maxScore) {
+							if (attackScore(tile.getUnit(),selected.getAttack()) > maxScore) {
 								targetForAttack = tile;
-								maxScore = attackScore(tile.getUnit());
+								maxScore = attackScore(tile.getUnit(), selected.getAttack());
 							}
 						}
-	
+						
+						// for debugging
+						BasicCommands.drawTile(out, targetForAttack, 2);
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						BasicCommands.drawTile(out, targetForAttack, 0);
 						//perform the attack
 						gameState.attack(selected, targetForAttack.getUnit(), out);
 					}
@@ -429,14 +456,17 @@ public class EndTurnClicked implements EventProcessor{
 	 * and whether it is the avatar, and compute a score of maximum 100.
 	 * This score is used in choosing the target for attack in the AI logic
 	 */
-	public int attackScore(Unit unit) {
-		if (unit.getId() == 99) {
-			return 100;
-		}
+	public int attackScore(Unit unit, int attack) {
+		// if (unit.getId() == 99) {
+		// 	return 100;
+		// }
 		int score = 0;
 
 		score += Math.min(25, unit.getAttack() * 5);
 		score += Math.min(25, 60 / unit.getHealth());
+		if (unit.getId() == 99) {
+			score+=50;
+		}
 		if (unit.isRanged()) {
 			score+=20;
 		}
@@ -445,6 +475,9 @@ public class EndTurnClicked implements EventProcessor{
 		}
 		if (!unit.canCounterAttack()) {
 			score+=10;
+		}
+		if (attack >= unit.getHealth()) {
+			score+=20;
 		}
 
 		return score;

@@ -17,7 +17,7 @@ public class PlayerAvatar extends Unit{
         owner.setHealth(getHealth());
         BasicCommands.setPlayer1Health(out, owner);
         if (getHealth() <= 0) {
-            BasicCommands.addPlayer1Notification(out, "You lose! Your avatar 0 health", 5);
+            BasicCommands.addPlayer1Notification(out, "You lose! Your avatar 0 health", 10);
         }
     }
 

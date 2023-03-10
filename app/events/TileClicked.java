@@ -101,8 +101,8 @@ public class TileClicked implements EventProcessor{
 
 					// keep tracked of the unit selected
 					gameState.unitLastClicked = selected;
-					String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
-					BasicCommands.addPlayer1Notification(out, debug, 2);
+					// String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
+					// BasicCommands.addPlayer1Notification(out, debug, 2);
 
 				// if the unit has moved but not yet attacked
 				}else if (selected.canAttack()) {
@@ -130,8 +130,8 @@ public class TileClicked implements EventProcessor{
 					gameState.unitLastClicked = selected;
 	
 
-					String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
-					BasicCommands.addPlayer1Notification(out, debug, 2);
+					// String debug = String.format("selected Unit id:%d x%d y%d", selected.getId(), clicked.getTilex(), clicked.getTiley());
+					// BasicCommands.addPlayer1Notification(out, debug, 2);
 				}
 				
 				

@@ -183,7 +183,7 @@ public class Card {
 			e.printStackTrace();
 		}
 		
-		BasicCommands.addPlayer1Notification(out, String.format("Summon unit id: %d", id), 1);
+		// BasicCommands.addPlayer1Notification(out, String.format("Summon unit id: %d", id), 1);
 	}
 
 	// hashmap to find the approriate config files
