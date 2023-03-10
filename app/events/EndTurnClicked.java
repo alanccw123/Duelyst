@@ -320,8 +320,8 @@ public class EndTurnClicked implements EventProcessor{
 			// Zihao's code
 			
 			Map<Integer, Integer> map1 = init_AiCard(gameState.getAIHand());
-			int xPos = humanAvatar.getTile().getTilex();
-			int yPos = humanAvatar.getTile().getTiley();
+			int xPos = humanAvatar.getTile().getXpos();
+			int yPos = humanAvatar.getTile().getYpos();
 			while(!gameState.getAIHand().isEmpty() && LowestManaCard(gameState.getAIHand()).getManacost() <= gameState.getAiMana()){
 				
 				Card topScoreCard = Play_Card(map1,gameState.getAIHand(),gameState.getAiMana());
