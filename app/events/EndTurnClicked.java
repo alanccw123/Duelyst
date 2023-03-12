@@ -377,14 +377,17 @@ public class EndTurnClicked implements EventProcessor{
 	/**
 	 *
 	 * This method returns a map for ranking the Unit Cards for the AI deck
-	 * More powerful units are given a higher score
+	 * In general, more powerful units are given a higher score
 	 * @param Ai_Cards
 	 */
 	public Map<Integer, Integer> init_AiCard(List<Card> Ai_Cards){
 		Map<Integer,Integer> map=new HashMap<>();
 		for(int i=0;i<Ai_Cards.size();i++){
 			if(Ai_Cards.get(i).getCardname().equals("Planar Scout")){
-				map.put(Ai_Cards.get(i).getId(),30);
+				/* this airdrop unit is given a high score because it can be summoned 
+				* right next to the player' avatar, allowing subsequent summons at a better position
+				*/
+				map.put(Ai_Cards.get(i).getId(),99);
 			}else if(Ai_Cards.get(i).getCardname().equals("Rock Pulveriser")){
 				map.put(Ai_Cards.get(i).getId(),50);
 			}else if(Ai_Cards.get(i).getCardname().equals("Pyromancer")){
@@ -419,7 +422,7 @@ public class EndTurnClicked implements EventProcessor{
 
 		score += Math.min(25, unit.getAttack() * 5);
 		score += Math.min(25, 60 / unit.getHealth());
-		if (unit.getId() == 99) {
+		if (unit.getId() == 99) {// if the unit is avatar
 			score+=40;
 		}
 		if (unit.isRanged()) {
@@ -493,7 +496,7 @@ public class EndTurnClicked implements EventProcessor{
 	        return tiles.get(randomIndex);
 	}
 
-	// helper method to pick the tile furthest away to a given x,y position from a list of tiles
+	// helper method to pick the tile furthest away from a given x,y position from a list of tiles
 	public Tile getSafestTile(List<Tile> tiles, int x, int y) {
 		if (tiles.isEmpty()) {
 			return null;
