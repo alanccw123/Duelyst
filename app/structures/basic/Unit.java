@@ -30,7 +30,7 @@ public class Unit {
 	ImageCorrection correction;
 	
 	
-
+	// attributes for keeping track of the unit's statistic
 	@JsonIgnore
 	private int player;
 	@JsonIgnore
@@ -48,8 +48,10 @@ public class Unit {
 	}
 
 	public void setHealth(int health) {
+		// cannot raise the unit's health above its max
 		if (health > maxHealth) {
 			this.health = maxHealth;
+		// cannot have negative health
 		}else if (health < 0) {
 			this.health = 0;
 		}else {
@@ -84,6 +86,8 @@ public class Unit {
 		return current;
 	}
 
+	// attributes for keeping track of action available
+	// by default an unit can only move, attack and counter-attack once per turn
 	@JsonIgnore
 	private int maxAttackAction = 1;
 	@JsonIgnore
@@ -130,6 +134,7 @@ public class Unit {
 		availableMoveAction--;
 	}
 
+	// booleans indicating whether the unit has special abilities
 	@JsonIgnore
 	private boolean isProvoke;
 	@JsonIgnore
@@ -160,6 +165,8 @@ public class Unit {
 		isflying = flying;
 	}
 
+
+	
     public Unit() {}
 	
 	public Unit(int id, UnitAnimationSet animations, ImageCorrection correction) {

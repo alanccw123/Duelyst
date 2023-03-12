@@ -33,10 +33,10 @@ public class Card {
 	MiniCard miniCard;
 	BigCard bigCard;
 
-	// check for targets to play the card on
-	// returns a list of tiles
-	// base version is for summoning units, overide in child classes to implement spell cards
-	public List<Tile> checkTargets(GameState gameState, int player) {
+	/* This method check for targets to play the card on and returns a list of tiles 
+	The base version is for summoning units, overide in child classes to implement spell cards
+	*/
+	public List<Tile> checkTargets(GameState gameState) {
 		List<Unit> friendlyunits = new ArrayList<>();
 		List<Tile> targets = new ArrayList<>();
 		Board board = gameState.getGameBoard();
@@ -44,6 +44,7 @@ public class Card {
 		// check if the card is air-drop unit
 		Integer[] airDropUnits = new Integer[]{6, 16, 28, 38};
 		if (Arrays.stream(airDropUnits).anyMatch(x -> x == id)) {
+
 			// if so, all tiles un-occupied are valid
 			for (int i = 0; i < board.board.length; i++) {
 				for (int j = 0; j < board.board[i].length; j++) {
@@ -57,9 +58,9 @@ public class Card {
 		}
 
 		// get list of friendly units based on whose turn it is
-		if (player == 1) {
+		if (gameState.playerTurn) {
 			friendlyunits = gameState.getPlayerUnits();
-		}else if (player == 2) {
+		}else {
 			friendlyunits = gameState.getAIUnits();
 		}
 
@@ -85,8 +86,10 @@ public class Card {
 		
 	}
 
-	// execute the effect of the card
-	// base version is for summoning units, override in child classes to implement spell cards
+
+	/* This method executes the effect of the card 
+	 * Base version is for summoning units, override in child classes to implement spell cards
+	*/
 	public void playCard(ActorRef out, GameState gameState, Tile target) {
 		// BasicCommands.addPlayer1Notification(out, String.format("Play card id: %d", id), 1);
 
@@ -95,8 +98,9 @@ public class Card {
 			return;
 		}
 
-		// create the corresponding unit
+		// create the corresponding unit from the conf files
 		Unit unit = BasicObjectBuilders.loadUnit(mapping.get(cardname), id, Unit.class);
+		// correct conf file for AI's hailstone golem
 		if (unit.getId() == 29 || unit.getId() == 39) {
 			unit = BasicObjectBuilders.loadUnit(StaticConfFiles.u_hailstone_golemR, id, Unit.class);
 		}
@@ -186,7 +190,6 @@ public class Card {
 			e.printStackTrace();
 		}
 		
-		// BasicCommands.addPlayer1Notification(out, String.format("Summon unit id: %d", id), 1);
 	}
 
 	// hashmap to find the approriate config files

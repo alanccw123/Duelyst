@@ -53,34 +53,35 @@ public class CardClicked implements EventProcessor{
 			BasicCommands.drawCard(out, selected, handPosition, 1);
 				
 			// get the list of target tiles for using the card
-				List<Tile> tagets = selected.checkTargets(gameState, 1);
+			List<Tile> tagets = selected.checkTargets(gameState);
+			
 			// highlight the target tiles
-				for (Tile tile : tagets) {
-					// highlight enemy units in red
-					if (tile.isHasUnit() && tile.getUnit().getPlayer() == 2) {
-						BasicCommands.drawTile(out, tile, 2);
-						try {
-							Thread.sleep(5);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					// highlight empty tiles and friendly units in white
-					}else{
-						BasicCommands.drawTile(out, tile, 1);
-						try {
-							Thread.sleep(5);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+			for (Tile tile : tagets) {
+				// highlight enemy units in red
+				if (tile.isHasUnit() && tile.getUnit().getPlayer() == 2) {
+					BasicCommands.drawTile(out, tile, 2);
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
 					}
-					
-					// keep track of the highlighted tiles
-					gameState.highlightedForCard.add(tile);
-					
+				// highlight empty tiles and friendly units in white
+				}else{
+					BasicCommands.drawTile(out, tile, 1);
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
+				
+				// keep track of the highlighted tiles
+				gameState.highlightedForCard.add(tile);
+				
+			}
 
-				// update card selected
-				gameState.cardLastClicked = selected;
+			// update card selected
+			gameState.cardLastClicked = selected;
 				
 		// the player clicks on a selected card to de-select
 		}else if (selected == gameState.cardLastClicked) {

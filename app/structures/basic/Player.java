@@ -14,7 +14,6 @@ public class Player {
 
 	int health;
 	int mana;
-	ActorRef out;
 	
 	public Player() {
 		super();

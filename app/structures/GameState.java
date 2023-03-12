@@ -24,8 +24,10 @@ import utils.StaticConfFiles;
 public class GameState {
 
 
-	// turn and Player related attributes
-	public boolean playerTurn = false;
+	/* 
+	turn change and Player related attributes & methods
+	*/ 
+	public boolean playerTurn = false;// boolean to keep track of whose turn it is
 	private int turnNum = 1;
 	private Player player = new Player(20, 0);
 	private Player ai = new Player(20, 0);
@@ -61,11 +63,6 @@ public class GameState {
 		for (Unit unit : AIUnits) {
 			unit.resetAction();
 		}
-	}
-
-
-
-	public void initalize(){
 	}
 
 	
@@ -117,12 +114,16 @@ public class GameState {
 	public boolean gameInitalised = false;
 
 
-	// cards and units related attributes
+	/* 
+	cards and units related attributes
+	*/ 
 	private Board gameBoard = new Board();
 
+	// lists storing the decks
 	private List<Card> playerDeck = OrderedCardLoader.getPlayer1Cards();
 	private List<Card> AIDeck = OrderedCardLoader.getPlayer2Cards();
 
+	// lists storing the hands
 	private List<Card> playerHand = new ArrayList<>();
 	private List<Card> AIHand = new ArrayList<>();
 
@@ -236,20 +237,22 @@ public class GameState {
 		return AIUnits;
 	}
 
-	// keep track of the objects last-clicked
-	// these values are useful in the eventprocessors'logic
+	/* keep track of the objects last-clicked 
+	these values are useful in the eventprocessors'logic
+	*/
 	public Unit unitLastClicked;
 	public Tile tileLastClicked;
 	public Card cardLastClicked;
 	
-	// keep track of the highlighted tiles on board
+	// keep track of the highlighted tiles for different actions 
 	public List<Tile> highlightedForMovement = new ArrayList<>();
 	public List<Tile> highlightedForAttack = new ArrayList<>();
 	public List<Tile> highlightedForCard = new ArrayList<>();
 	
-	//attribute to keep track of whether moving animation is playing
+	//boolean to keep track of whether moving animation is playing
 	private boolean ready = true;
 
+	//boolean to keep track of whether there is an attack to do after an unit stopped moving
 	private boolean onGoingAttack = false;
 
 
@@ -274,12 +277,6 @@ public class GameState {
 		attacker=null;
 	}
 
-	// not used
-	// private int unitID = 0;
-	
-	// public int getUnitID() {
-    //     return unitID++;
-    // }
 
 	public Board getGameBoard() {
 		return gameBoard;
@@ -318,29 +315,29 @@ public class GameState {
 		highlightedForCard.clear();
 	}
 	
-	// move an unit to a given tile
+	/* 
+	This method move an unit to a given tile
+	 */
 	public void moveUnit(Unit unit, Tile target, ActorRef out) {
 		// spend movement action
 		unit.spendMoveAction();
+
+		// get the unit current position
 		Tile current = gameBoard.searchFor(unit);
 		int x = current.getTilex();
 		int y = current.getTiley();
-		boolean yFirst = false;
 		
 		//the default movement path is x-first
 		//when the path is not passable i.e. blocked by an enemy unit, then y-first path should be taken
+		boolean yFirst = false;
 		if (target.getTilex() > x && !MovementChecker.isPassable(x + 1, y, gameBoard, unit.getPlayer())) {
 			yFirst = true;
 		}else if (target.getTilex() < x && !MovementChecker.isPassable(x - 1, y, gameBoard, unit.getPlayer())) {
 			yFirst = true;
 		}
 		
+		// play moving animation in the frontend
 		BasicCommands.moveUnitToTile(out, unit, target, yFirst);
-		// try {
-		// 	Thread.sleep(2500);
-		// } catch (InterruptedException e) {
-		// 	e.printStackTrace();
-		// }
 
 		//update unit's new position
 		current.removeUnit();
@@ -348,30 +345,29 @@ public class GameState {
 
 	}
 	
-	// perform an attack
-	// takes the attcker and defender units as input
+	/* This is the method for performing an attack
+	 It takes the attcker and defender units as input
+	 and does all the relevant calculation
+	 */
 	public void attack(Unit attacker, Unit defender, ActorRef out) {
 		
+		//spend attack action
 		if (!onGoingAttack) {
 			attacker.spendAttackAction();
 		}
-		// Tile current = gameBoard.searchFor(attacker);
-		// Tile target = gameBoard.searchFor(defender);
 
 		Tile current = attacker.getTile();
 		Tile target = defender.getTile();
 		
-		//if the attack target is out of reach
+		//if the attack target is out of reach, need to move the unit into position first before attack
 		if (!AttackChecker.checkAttackRange(current, gameBoard, attacker.getPlayer()).contains(target)) {
-			
-			//need to move the unit into position first before attack
-
+					
+			// decide which tile to move to in order to launch the attack
 			List<Tile> possibleTiles = MovementChecker.checkMovement(current, gameBoard);
-			
-			
 			int shortestDistance = 0;
 			Tile destination = null;
 			
+			// the shortest path that would allow the unit to attack is picked
 			for (Tile tile : possibleTiles) {
 				//check if moving to this tile allows the attacker to initiate attack
 				if (AttackChecker.checkAttackRange(tile, gameBoard, attacker.getPlayer()).contains(target)) {
@@ -386,7 +382,7 @@ public class GameState {
 						destination = tile;
 						
 					// if two paths have equal distance, the one with positive difference in position indices would be used
-					// therefore, the unit would prioritise moving right over left, and down over top
+					// therefore, the unit would prioritise moving right over left, and down over top in this case
 					}else if (distance == shortestDistance) {
 						if (destination.getTilex() - current.getTilex()+ destination.getTiley() - current.getTiley() < (xDistance + yDistance)) {
 							destination = tile;
@@ -395,7 +391,7 @@ public class GameState {
 				}
 				
 			}
-			// moving the unit into attack position first
+			// moving the unit into attack position
 			moveUnit(attacker, destination, out);
 
 			// keep track of the on-going unfinished attack
@@ -405,12 +401,10 @@ public class GameState {
 
 		// else if the target is now in range
 		}else {
-			// attacker attack
 			
-
-		
+			// attacker attack
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.attack);
-			//play ranged attack animation if the attacker is ranged
+			//play projectile animation if the attacker is ranged
 			if (attacker.isRanged()) {
 				EffectAnimation projectile = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_projectiles);
 				BasicCommands.playProjectileAnimation(out, projectile, 11, current, target);
@@ -421,7 +415,6 @@ public class GameState {
 				e.printStackTrace();
 			}
 			
-
 			BasicCommands.playUnitAnimation(out, attacker, UnitAnimationType.idle);
 
 			//defender counter-attack if not dead, haven't countered this turn and within range
@@ -443,15 +436,11 @@ public class GameState {
 				
 	}
 	
-	// helper method for dealing damage to an unit 
-	// returns a boolean indicating whether the unit survives the damage
+	/*
+	 * This method does all caculation for dealing damage to an unit from any sources
+	 *  It returns a boolean indicating whether the unit survives the damage
+	 */
 	public boolean unitTakeDamage(Unit unit, ActorRef out, int damage) {
-		// BasicCommands.playUnitAnimation(out, unit, UnitAnimationType.hit);
-		// try {
-		// 	Thread.sleep(1000);
-		// } catch (InterruptedException e) {
-		// 	e.printStackTrace();
-		// }
 		
 		// if the damaged unit is avatar
 		if (unit.getId() == 99) {
@@ -480,6 +469,8 @@ public class GameState {
 				// AI draws a card
 				AIDrawCard(out);
 			}
+
+			// remove the dead unit
 			BasicCommands.deleteUnit(out, unit);
 			unit.getTile().removeUnit();
 			playerUnits.remove(unit);
@@ -493,6 +484,7 @@ public class GameState {
 		}
 		
 	}
+	
 	public boolean isReady() {
 		return ready;
 	}

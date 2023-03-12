@@ -34,17 +34,9 @@ public class Initalize implements EventProcessor{
 	@Override
 	public void processEvent(ActorRef out, GameState gameState, JsonNode message) {
 
-
+		// Start the human turn
 		gameState.changeTurn();
-		// gameState.something = true;
-		gameState.initalize();
-		// BasicCommands.setPlayer1Health(out, gameState.player);
-		// BasicCommands.setPlayer2Health(out, gameState.ai);
-		// BasicCommands.setPlayer1Mana(out, gameState.player);
-		// BasicCommands.setPlayer2Mana(out, gameState.ai);
 
-
-		
 		gameState.gameInitalised = true;
 		
 		Board gameBoard = gameState.getGameBoard();

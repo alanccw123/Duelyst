@@ -15,7 +15,7 @@ import utils.StaticConfFiles;
 
 public class EntropicDecay extends Card{
     @Override
-    public List<Tile> checkTargets(GameState gameState, int player) {
+    public List<Tile> checkTargets(GameState gameState) {
         List<Tile> targets = new ArrayList<>();
 
         for (Unit u : gameState.getPlayerUnits()){

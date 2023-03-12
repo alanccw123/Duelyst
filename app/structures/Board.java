@@ -6,6 +6,10 @@ import structures.basic.Tile;
 import structures.basic.Unit;
 import utils.BasicObjectBuilders;
 
+/*This class represents the gameboard and store the data structure, which is a 2D array of tile objects
+ * 
+ */
+
 public class Board {
 	
 	public Board() {

@@ -28,6 +28,7 @@ public class Tile {
 	int tilex;
 	int tiley;
 
+	// attributes for keeping track of unit occupying the tile
 	@JsonIgnore
 	Unit unit;
 	@JsonIgnore
@@ -124,9 +125,12 @@ public class Tile {
 	public void setTiley(int tiley) {
 		this.tiley = tiley;
 	}
+
+	// for calculating distance from a given x and y position
 	public double distanceFromPosition(int x, int y) {
         return Math.sqrt(Math.pow(this.xpos - x, 2) + Math.pow(this.ypos - y, 2));
     }
+	
 	/**
 	 * Loads a tile from a configuration file
 	 * parameters.

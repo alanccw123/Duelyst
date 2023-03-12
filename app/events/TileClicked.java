@@ -55,12 +55,12 @@ public class TileClicked implements EventProcessor{
 		}
 		
 		
-		//the user clicks on a new tile
+		//the user clicks on a new unit
 		if (gameState.unitLastClicked == null && gameState.cardLastClicked == null) {
 			
 			if (clicked.isHasUnit()) {
 
-				// player clicks on an unit
+				// get the selected unit
 				Unit selected = clicked.getUnit();
 
 				// cannot operate on AI's units
@@ -73,7 +73,7 @@ public class TileClicked implements EventProcessor{
 				if (selected.canMove()) {
 					// generate lists of tiles for movement & attack
 					List<Tile> range = MovementChecker.checkMovement(clicked, board); // tiles that the unit can move to
-					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer()); // tiles (with enemy unit) that can be attacked from tiles within movement range
+					List<Tile> attackable = AttackChecker.checkAllAttackRange(range, board, selected.getPlayer()); // tiles (with enemy unit) that can be attacked after movement
 					attackable.addAll(AttackChecker.checkAttackRange(clicked, board, selected.getPlayer()));// plus those that can be attacked from the unit current location
 
 					// highlight the tiles for movement in white
@@ -138,7 +138,7 @@ public class TileClicked implements EventProcessor{
 				
 			}
 			
-		// else if the player last selected a card
+		// else if the player last selected a card, the current clicked tile is a target for playing card
 		}else if (gameState.cardLastClicked != null) {
 			// play the card if the tile clicked is valid
 			if (gameState.highlightedForCard.contains(clicked)) {
@@ -151,6 +151,7 @@ public class TileClicked implements EventProcessor{
 				// execute the card's effects
 				gameState.cardLastClicked.playCard(out, gameState, clicked);
 				
+				// clear the reference to the last clicked card
 				gameState.cardLastClicked = null;
 			}
 		}
@@ -178,8 +179,7 @@ public class TileClicked implements EventProcessor{
 				return;
 			}
 			
-			//clear highlight and reference to the last clicked unit
-			//so that the event-processor is ready to process a new action for another unit	
+			//clear reference to the last clicked unit so that the event-processor is ready to process a new action for another unit	
 			gameState.unitLastClicked = null;
 			
 		}	

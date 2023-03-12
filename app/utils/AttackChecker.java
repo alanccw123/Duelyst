@@ -8,6 +8,10 @@ import structures.Board;
 import structures.basic.Tile;
 import structures.basic.Unit;
 
+/*
+ * This utility class contains all the methods for doing attack related tiles calculation
+ */
+
 public class AttackChecker {
 	
 	

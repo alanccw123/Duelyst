@@ -7,10 +7,14 @@ import structures.GameState;
 import structures.basic.Player;
 import structures.basic.Tile;
 
+/*
+ * This utility class contains all the methods for doing movement related tiles calculation
+ */
+
 public class MovementChecker {
 	
 	
-	// this method checks the range of an unit on the current tile
+	// this method checks the moving range of an unit from the current tile
 	// it returns a list of all tiles that the unit can go
 	public static ArrayList<Tile> checkMovement(Tile tile, Board board) {
 		ArrayList<Tile> range = new ArrayList<>();
