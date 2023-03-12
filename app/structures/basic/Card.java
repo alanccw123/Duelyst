@@ -44,7 +44,6 @@ public class Card {
 		// check if the card is air-drop unit
 		Integer[] airDropUnits = new Integer[]{6, 16, 28, 38};
 		if (Arrays.stream(airDropUnits).anyMatch(x -> x == id)) {
-
 			// if so, all tiles un-occupied are valid
 			for (int i = 0; i < board.board.length; i++) {
 				for (int j = 0; j < board.board[i].length; j++) {

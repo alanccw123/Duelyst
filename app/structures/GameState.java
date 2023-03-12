@@ -391,7 +391,7 @@ public class GameState {
 				}
 				
 			}
-			// moving the unit into attack position
+			// moving the unit into attack position first
 			moveUnit(attacker, destination, out);
 
 			// keep track of the on-going unfinished attack
@@ -454,6 +454,7 @@ public class GameState {
 		}
 
 		unit.setHealth(unit.getHealth() - damage);
+		
 		
 		if (unit.getHealth() <= 0) {
 			// the unit is dead
