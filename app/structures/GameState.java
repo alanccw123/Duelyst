@@ -426,6 +426,10 @@ public class GameState {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				if (defender.isRanged()) {
+					EffectAnimation projectile = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_projectiles);
+					BasicCommands.playProjectileAnimation(out, projectile, 11, target, current);
+				}
 				unitTakeDamage(attacker, out, defender.getAttack());
 				defender.counterAttack();
 

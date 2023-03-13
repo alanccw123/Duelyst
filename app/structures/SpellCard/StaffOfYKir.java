@@ -19,6 +19,7 @@ public class StaffOfYKir extends Card{
     public List<Tile> checkTargets(GameState gameState) {
         List<Tile> targets = new ArrayList<>();
 
+        // staff of Ykir only targets AI avatar
         for (Unit unit : gameState.getAIUnits()) {
             if (unit.getId() == 100) {
                 targets.add(unit.getTile());
@@ -34,6 +35,7 @@ public class StaffOfYKir extends Card{
 
         Unit selected = target.getUnit();
 
+         // play effect animation
         EffectAnimation buff = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_buff);
         BasicCommands.playEffectAnimation(out, buff, target);
         try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -43,6 +45,7 @@ public class StaffOfYKir extends Card{
         BasicCommands.setUnitAttack(out, selected, selected.getAttack());
         try {Thread.sleep(10);} catch (InterruptedException e) {e.printStackTrace();}
 
+        // check for spellthief
         for (Unit u : gameState.getPlayerUnits()){
             if (u.getId()==1 || u.getId()==13){
                 BasicCommands.playEffectAnimation(out, buff, u.getTile());
@@ -57,6 +60,7 @@ public class StaffOfYKir extends Card{
             }
         }
 
+        // decrease mana
         gameState.getAi().setMana(gameState.getAi().getMana() - manacost);
 		BasicCommands.setPlayer2Mana(out, gameState.getAi());
     }

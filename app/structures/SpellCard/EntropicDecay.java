@@ -18,6 +18,7 @@ public class EntropicDecay extends Card{
     public List<Tile> checkTargets(GameState gameState) {
         List<Tile> targets = new ArrayList<>();
 
+        // entropic can target both enemy and friendly units, except the avatars
         for (Unit u : gameState.getPlayerUnits()){
             if(u.getId()!=99) {
                 targets.add(u.getTile());
@@ -39,6 +40,7 @@ public class EntropicDecay extends Card{
 
         Unit selected = target.getUnit();
 
+        // play effect animation
         EffectAnimation effect = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_martyrdom);
         BasicCommands.playEffectAnimation(out, effect, target);
         try {Thread.sleep(1000);} catch (InterruptedException e) {e.printStackTrace();}
@@ -47,6 +49,7 @@ public class EntropicDecay extends Card{
 
         gameState.unitTakeDamage(selected, out, selected.getHealth());
 
+        // check for spellthief
         for (Unit u : gameState.getPlayerUnits()){
             if (u.getId()==1 || u.getId()==13){
                 EffectAnimation buff = BasicObjectBuilders.loadEffect(StaticConfFiles.f1_buff);
@@ -62,6 +65,7 @@ public class EntropicDecay extends Card{
             }
         }
 
+        // decrease mana
         gameState.getAi().setMana(gameState.getAi().getMana() - manacost);
 		BasicCommands.setPlayer2Mana(out, gameState.getAi());
     }
